@@ -75,7 +75,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           explanation: "Nxd5 Nxd5 Bxd5 (or Bxd5 Nxd5 Nxd5) wins a clean pawn, and if Black continues with ...Rxd5, Rxd5 wins the rook as well. Count: three attackers, two defenders. Starting with the rook would be wrong, because Black can stop recapturing at the right moment.",
           wrong: {
             'd1d5': "Rxd5? Nxd5 Nxd5, and Black simply does not take back: you have given a rook for a knight and a pawn. Cheapest piece first.",
-            'f3b7': "Bxb7 grabs a different pawn, but it leaves d5 alone and gives Black time. Take the pawn you have counted."
+            'f3e2': "Be2 takes away one of your attackers: now d5 is attacked only twice and defended twice, so it is safe."
           }
         }
       ]

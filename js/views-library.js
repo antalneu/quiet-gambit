@@ -175,28 +175,54 @@
   };
 
   // ------------------------------------------------------------ family page
-  function sortBranch(list) {
-    return list.slice().sort(function (a, b) {
-      var sa = a.sans.join(' '), sb = b.sans.join(' ');
-      return sa < sb ? -1 : sa > sb ? 1 : 0;
-    });
-  }
-  function variationRow(x) {
-    var branch = x.branch.sans.length ? Q.moveText(x.branch.sans, x.branch.base.length) : 'Main line of the family';
+  function variationRow(x, label, inner) {
     return '<li class="var-item"><a class="var-row" href="' + href(x) + '">' +
-      '<span class="var-branch notation">' + esc(branch) + '</span>' +
+      '<span class="var-branch notation">' + esc(label) + '</span>' +
       '<span class="var-name">' + esc(x.short) + '</span>' +
       '<span class="var-sum">' + esc(x.summary) + '</span>' +
       '<span class="var-meta">' + A.tag(x.difficulty) + (x.style ? A.tag(x.style) : '') +
         '<span>' + x.minutes + ' min</span><span>' + plural(x.lines.length, 'move line') + '</span>' +
         (x.related.lessons.length ? '<span>' + plural(x.related.lessons.length, 'lesson') + '</span>' : '') + '</span>' +
-    '</a>' + (x.children.length ? '<ul class="var-children" aria-label="Branches of ' + esc(x.short) + '">' + sortBranch(x.children).map(variationRow).join('') + '</ul>' : '') + '</li>';
+    '</a>' + (inner || '') + '</li>';
+  }
+  // The family's variations as a tree of branch points: shared moves appear once, and
+  // each variation sits under the position where it parts ways from its neighbours.
+  function famTree(f) {
+    var root = { kids: {}, order: [], entries: [], path: f.root.slice() };
+    f.variations.forEach(function (x) {
+      var n = root;
+      x.defining.slice(f.root.length).forEach(function (u) {
+        if (!n.kids[u]) { n.kids[u] = { kids: {}, order: [], entries: [], path: n.path.concat([u]) }; n.order.push(u); }
+        n = n.kids[u];
+      });
+      n.entries.push(x);
+    });
+    return root;
+  }
+  function renderKids(n) {
+    var items = n.order.map(function (u) {
+      var k = n.kids[u], seg = 1;
+      while (!k.entries.length && k.order.length === 1) { k = k.kids[k.order[0]]; seg++; }
+      var sans = Q.sanPath(k.path);
+      return { node: k, label: Q.moveText(sans.slice(sans.length - seg), k.path.length - seg), key: sans.join(' ') };
+    }).sort(function (a, b) { return a.key < b.key ? -1 : a.key > b.key ? 1 : 0; });
+    return items.map(function (it) {
+      var k = it.node, inner = k.order.length ? '<ul class="var-children">' + renderKids(k) + '</ul>' : '';
+      if (k.entries.length) return k.entries.map(function (x, i) { return variationRow(x, it.label, i === k.entries.length - 1 ? inner : ''); }).join('');
+      return '<li class="var-item var-fork"><p class="var-fork-head"><span class="var-branch notation">' + esc(it.label) + '</span>' +
+        '<span class="small muted">' + k.order.length + ' ways to continue</span></p><ul class="var-children">' + renderKids(k) + '</ul></li>';
+    }).join('');
+  }
+  function familyTreeHTML(f) {
+    var t = famTree(f);
+    return t.entries.map(function (x, i) {
+      return variationRow(x, 'Main line of the family', i === t.entries.length - 1 && t.order.length ? '<ul class="var-children">' + renderKids(t) + '</ul>' : '');
+    }).join('') + (t.entries.length ? '' : renderKids(t));
   }
 
   A.views.family = function (id) {
     var f = Q.family(id);
     if (!f || !f.variations.length) return A.views.notFound();
-    var roots = sortBranch(f.variations.filter(function (v) { return !v.parentRef; }));
     var related = Q.gambits.filter(function (g) { return f.gambits.indexOf(g) < 0 && g.familyGuess === f.id; });
     var lessons = f.lessons.map(Q.lesson).filter(Boolean);
     var compareRows = f.variations.map(function (x) {
@@ -222,8 +248,8 @@
         '</div>' +
       '</div>' +
       '<section class="section" aria-labelledby="vars-h"><div class="section-head"><h2 class="h2" id="vars-h">Variations</h2>' +
-        '<p class="muted">Each variation branches from the family\'s starting moves or from another variation. The moves on the left show where it parts ways.</p></div>' +
-        '<ul class="var-tree">' + roots.map(variationRow).join('') + '</ul></section>' +
+        '<p class="muted">Shared moves are shown once. Each variation sits under the position where it parts ways, and the moves on the left are the ones that lead to it from there.</p></div>' +
+        '<ul class="var-tree">' + familyTreeHTML(f) + '</ul></section>' +
       (f.variations.length > 1 ? '<section class="section section-tight" aria-labelledby="cmp-h"><h2 class="h2" id="cmp-h">Compare the variations</h2>' +
         '<div class="table-scroll"><table class="progress-table compare-table"><caption class="sr-only">Variations of the ' + esc(f.name) + ' compared</caption><thead><tr><th scope="col">Variation</th><th scope="col">Moves</th><th scope="col">Difficulty</th><th scope="col">Style</th><th scope="col">Study time</th><th scope="col">Move lines</th></tr></thead><tbody>' + compareRows + '</tbody></table></div>' +
         '<p class="small muted"><a href="#/explorer' + A.buildQuery({ side: f.side, at: f.root.join('.'), a: f.variations[0].id, b: f.variations[1].id }) + '">Compare two variations move by move</a> in the explorer.</p></section>' : '') +

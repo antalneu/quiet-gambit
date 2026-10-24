@@ -116,8 +116,12 @@
       if (loc.entry && (!loc.family || loc.entry.kind === 'gambit' || loc.entry.short)) where.push('<a href="' + A.href(loc.entry) + '">' + esc(loc.entry.kind === 'gambit' ? loc.entry.name : loc.entry.short) + '</a>');
       if (loc.lines.length === 1) where.push('<a href="' + A.href(loc.lines[0]) + '">' + esc(loc.lines[0].name) + '</a>');
       var notes = node.notes.slice(0, 2);
-      $('#ex-where').innerHTML = '<p class="ex-where-label">' + (node === root ? 'Starting position' : 'You are in') + '</p>' +
-        (node === root ? '<p class="prose">Choose a first move to begin.</p>' : where.length ? '<p class="ex-where-trail">' + where.join('<span aria-hidden="true"> › </span>') + '</p>' : '<p class="prose muted">A position on the way to a named line.</p>') +
+      // Families that begin further down this path, for positions before any family starts.
+      var ahead = where.length ? [] : Q.families.filter(function (f) {
+        return f.side === side && f.variations.length && f.root.length > node.path.length && Q.startsWith(f.root, node.path);
+      });
+      $('#ex-where').innerHTML = '<p class="ex-where-label">' + (node === root ? 'Starting position' : where.length || !ahead.length ? 'You are in' : 'Where this leads') + '</p>' +
+        (node === root ? '<p class="prose">Choose a first move to begin.</p>' : where.length ? '<p class="ex-where-trail">' + where.join('<span aria-hidden="true"> › </span>') + '</p>' : (ahead.length ? '<p class="prose">On the way to ' + ahead.slice(0, 4).map(function (f) { return '<a href="' + A.href(f) + '">' + esc(f.name) + '</a>'; }).join(', ') + (ahead.length > 4 ? ' and ' + (ahead.length - 4) + ' more' : '') + '.</p>' : '<p class="prose muted">A position on the way to a named line.</p>')) +
         (notes.length ? '<div class="ex-why"><p class="ex-where-label">Why ' + esc(moveLabel(node)) + '</p>' + notes.map(function (n) { return '<p class="prose">' + esc(n.text) + '</p>'; }).join('') + '</div>' : '');
 
       // Choices from here.

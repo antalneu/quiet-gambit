@@ -98,3 +98,30 @@ the Philidor position as a reference card), and the K+Q mate with the stalemate 
 - Every FEN, line and solution was replayed with a move-legality checker
   (rules engine verified by perft) before hand-off: legal moves, SAN matching UCI,
   correct check and mate marks, side to move and castling rights.
+
+---
+
+# Library v3: skills categories and guided paths
+
+The foundation path above still stands; the library around it has grown. Content now lives in
+`js/content/*.js` parts, with categories and guided paths in `js/content/core.js`.
+
+## Skills categories (group 'Skills')
+| Category | What it trains | Main file |
+|---|---|---|
+| Tactics | Named patterns: forks, pins, deflection, decoy, overloading, x-rays, mating nets | skills-tactics-attack-defence.js |
+| Calculation | Method: candidates, counting, forcing moves first, visualising, comparing lines, the opponent's best reply, quiet moves, pawn races, defence | skills-calculation-structures-games.js (+ tactics-8, tactics-15) |
+| Middlegame Strategy | Worst piece, pawn breaks, holes, doubled pawns, good v bad pieces, bishop pair, minority attack | skills-strategy-endgames-practical.js |
+| Pawn Structures | Islands, French chain, King's Indian chain, Maroczy, Scheveningen, Najdorf ...e5, Nimzo doubled c-pawns, Stonewall, Benoni, IQP for and against, hanging pawns | skills-calculation-structures-games.js (+ strategy-6, 7, 10) |
+| Attacking Play / Defence / Endgames / Practical | unchanged | the two older skills files |
+| Model Games | Three famous games (Reti v Tartakower 1910, Ed. Lasker v Thomas 1912, Lasker v Bauer 1889) and six illustrative games composed for the site, each for one transferable idea | skills-calculation-structures-games.js |
+
+Illustrative model games are labelled as composed teaching games in their text; only games whose moves are
+certain carry player names. Opening moves in illustrative games follow established lines where stated.
+
+## Guided paths
+Every path has `focus` and `level` (the level of its first steps). Openings: first-white, solid-white,
+attacking-white (White); black-e4-solid, black-e4-sicilian (1.e4); black-d4-flank (solid 1.d4),
+black-d4-indian (fighting 1.d4); black-flank. Gambits: white-gambits, black-gambits, gambit-study (both sides).
+Skills: tactics-path, calculation-path, middlegame-plans, attack-defence, endgame-path, practical-path,
+model-games-path. Each path is 6-14 steps, ordered so each step leans on the last.

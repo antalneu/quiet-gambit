@@ -50,8 +50,11 @@ window.QG_CORE = {
         { lesson: 'tactics-1', why: "Forks decide many opening skirmishes; you will need them in the next lessons." },
         { lesson: 'white-openings-5', why: "A practical Italian-family trick that uses a fork." },
         { lesson: 'white-openings-6', why: "The Scotch: open the centre early and chase Black's pieces." },
+        { lesson: 'white-openings-20', why: "One reusable plan for quiet 1.e4 e5 games: the knight tour to g3." },
         { lesson: 'white-openings-4', why: "Your simple answer to the Sicilian, the most common reply to 1.e4." },
+        { lesson: 'white-openings-15', why: "The simplest anti-Sicilian plan: trade the bishop and aim at the doubled pawns." },
         { lesson: 'white-openings-3', why: "Your answer to the Caro-Kann, using a pawn to harass a developed piece." },
+        { lesson: 'white-openings-18', why: "Against the Advance Caro-Kann, hunt the developed bishop with Nh4." },
         { lesson: 'white-openings-12', why: "Against the Scandinavian: develop while chasing the early queen." },
         { lesson: 'tactics-3', why: "Back-rank mates appear as soon as both sides castle." }
       ]
@@ -70,6 +73,7 @@ window.QG_CORE = {
         { lesson: 'white-openings-7', why: "The minority attack: the classic plan from the QGD Exchange." },
         { lesson: 'middlegames-1', why: "Outposts and bad bishops: the judgements behind those plans." },
         { lesson: 'white-openings-11', why: "Against the Nimzo-Indian: when to ask the bishop a question." },
+        { lesson: 'white-openings-23', why: "When an early queen move is justified: Qc2 in the Nimzo, Qb3 in the Grunfeld." },
         { lesson: 'pawn-structures-7', why: "What the doubled c-pawns that follow really mean for both sides." },
         { lesson: 'white-openings-10', why: "Against the King's Indian: a queenside pawn storm of your own." }
       ]
@@ -82,6 +86,7 @@ window.QG_CORE = {
       why: "Moves from simple traps to real gambit play, finishing with the attacking patterns those gambits create.",
       steps: [
         { lesson: 'white-openings-1', why: "A first taste of attacking f7 in the Italian." },
+        { lesson: 'white-openings-21', why: "The sharpest beginner Italian: 4.Ng5, and why 6.Bb5+ matters." },
         { lesson: 'white-gambits-4', why: "The Scotch Gambit: regain the pawn with tempo." },
         { lesson: 'white-gambits-1', why: "The Goring: development for a pawn, and a trap for the greedy." },
         { lesson: 'white-gambits-6', why: "The Evans: the best-respected of the classical gambits." },
@@ -100,11 +105,14 @@ window.QG_CORE = {
       why: "Each lesson gives Black one dependable idea: where the pieces go, which pawn break to aim for, and which trap to avoid.",
       steps: [
         { lesson: 'openings-2', why: "The Caro-Kann basics and its most famous trap." },
+        { lesson: 'black-vs-e4-16', why: "The Two Knights Caro-Kann: the plan against a common sideline, and a trap to avoid." },
         { lesson: 'black-vs-e4-3', why: "Where the light-squared bishop belongs, and how to keep it safe." },
         { lesson: 'black-vs-e4-1', why: "The Petroff: a symmetrical defence with one rule you must not break." },
         { lesson: 'black-vs-e4-2', why: "Against the Italian: free your game with ...d5." },
+        { lesson: 'black-vs-e4-14', why: "Against the Exchange Ruy Lopez: the queen fork every 1...e5 player needs." },
         { lesson: 'black-vs-e4-10', why: "The Scandinavian: keep the queen safe with ...c6." },
         { lesson: 'black-vs-e4-4', why: "The French Advance: attack the base of White's pawn chain." },
+        { lesson: 'black-vs-e4-19', why: "The French freeing break ...c5, in its simplest form." },
         { lesson: 'pawn-structures-2', why: "The French chain again: the second break against the head." },
         { lesson: 'black-vs-e4-5', why: "The Two Knights: give a pawn back for quick development." },
         { lesson: 'black-vs-e4-7', why: "A Ruy Lopez trap that wins a piece if White is careless." }
@@ -135,11 +143,13 @@ window.QG_CORE = {
       steps: [
         { lesson: 'black-vs-d4-1', why: "The Queen's Gambit Declined: a pin that is not what it seems." },
         { lesson: 'black-vs-d4-2', why: "The Slav: develop the bishop before ...e6 shuts it in." },
+        { lesson: 'black-vs-d4-21', why: "The Queen's Gambit Accepted: give the pawn back at the right moment." },
         { lesson: 'black-vs-d4-3', why: "The London is everywhere at club level: punish its weak b2." },
         { lesson: 'black-vs-d4-11', why: "The Colle: defuse White's central e4-e5 fork." },
         { lesson: 'black-vs-d4-12', why: "The Trompowsky: meet Bg5 with ...h6 and recapture correctly." },
         { lesson: 'black-vs-d4-4', why: "The Queen's Indian: control e4 with pieces." },
         { lesson: 'black-vs-d4-6', why: "QGD again: meet White's queenside expansion with a pawn break." },
+        { lesson: 'black-vs-d4-13', why: "Lasker's freeing exchanges: the natural way to equalise in the QGD." },
         { lesson: 'black-vs-d4-5', why: "The Nimzo-Indian knight jump to e4." },
         { lesson: 'pawn-structures-7', why: "Why ...Bxc3 is worth the bishop: targeting the doubled c-pawns." }
       ]
@@ -154,6 +164,7 @@ window.QG_CORE = {
         { lesson: 'black-vs-d4-7', why: "The King's Indian: the ...f5 break." },
         { lesson: 'pawn-structures-3', why: "The King's Indian chain: who attacks where, and why." },
         { lesson: 'black-vs-d4-8', why: "The Grunfeld: pressure on the centre from the long diagonal." },
+        { lesson: 'black-vs-d4-16', why: "Doubled c-pawns: the idea at the heart of the Nimzo-Indian." },
         { lesson: 'black-vs-d4-9', why: "The Benoni: survive the most dangerous early check." },
         { lesson: 'pawn-structures-9', why: "The Benoni structure: White's e5 break and your queenside majority." },
         { lesson: 'pawn-structures-8', why: "The Dutch Stonewall: a light-square wall and its dark-square holes." },
@@ -169,8 +180,10 @@ window.QG_CORE = {
       why: "Starts with the move orders that lead back to familiar ground, then covers the English and the less common flank systems.",
       steps: [
         { lesson: 'black-vs-flank-7', why: "1.Nf3 and 2.c4: steer into Slav territory." },
+        { lesson: 'black-vs-flank-11', why: "Against the Reti, gain space with ...d4." },
         { lesson: 'black-vs-flank-1', why: "The English Four Knights: a trap to know from move one." },
         { lesson: 'black-vs-flank-2', why: "1.c4 e5: gain space in the centre." },
+        { lesson: 'black-vs-flank-10', why: "Against 1.c4 and g3, the ...f5 plan in the Closed English." },
         { lesson: 'black-vs-flank-3', why: "The King's Indian Attack: punish an early e4." },
         { lesson: 'black-vs-flank-5', why: "The Symmetrical English: break with ...d5." },
         { lesson: 'black-vs-flank-8', why: "The fianchetto English: stop b4 with ...a5." },
@@ -205,7 +218,9 @@ window.QG_CORE = {
       why: "Starts with gambits where the pawn usually comes back, then moves to real sacrifices that need an attack to justify them.",
       steps: [
         { lesson: 'white-gambits-4', why: "The Scotch Gambit: the pawn returns with tempo." },
+        { lesson: 'white-gambits-17', why: "The Tennison: a discovered-attack trap to recognise early." },
         { lesson: 'white-gambits-10', why: "The Urusov: recapture with tempo and develop." },
+        { lesson: 'white-gambits-15', why: "The Belgrade: a pawn for open lines in the Four Knights." },
         { lesson: 'white-gambits-1', why: "The Goring: development for a pawn." },
         { lesson: 'white-gambits-2', why: "The Smith-Morra: an anti-Sicilian gambit." },
         { lesson: 'white-gambits-3', why: "The Milner-Barry: a French gambit with a key check." },
@@ -227,11 +242,13 @@ window.QG_CORE = {
       why: "Starts with short traps that teach the danger signs, then moves to sound gambits played at the highest level.",
       steps: [
         { lesson: 'black-gambits-1', why: "The Englund trap: a first lesson in punishing greed." },
+        { lesson: 'black-gambits-18', why: "The Stafford: a popular online trap, and why it is objectively dubious." },
         { lesson: 'black-gambits-2', why: "From's Gambit: the weak e1-h4 diagonal." },
         { lesson: 'black-gambits-5', why: "The Blackburne Shilling trap: know it, then decide if you want it." },
         { lesson: 'black-gambits-12', why: "The Elephant Gambit: a wedge on e4 and the h2 target." },
         { lesson: 'black-gambits-4', why: "The Two Knights: a sound pawn sacrifice for time." },
         { lesson: 'black-gambits-3', why: "The Budapest: a knight mate on d3 to remember." },
+        { lesson: 'black-gambits-16', why: "The Schara-Hennig: knight forks against an uncastled king." },
         { lesson: 'black-gambits-7', why: "The Traxler: answer the fork with a check." },
         { lesson: 'black-gambits-10', why: "The Icelandic Gambit: the pin on c3." },
         { lesson: 'black-gambits-6', why: "The Albin: the Lasker Trap." },
