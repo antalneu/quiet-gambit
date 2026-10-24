@@ -110,8 +110,8 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "A double check first, then a queen sacrifice on g8.",
           explanation: "Nh6+ is a double check (knight and queen), so the king must move: only ...Kh8 is legal. Qg8+! can only be taken by the rook, because the knight guards g8. Then Nf7 is a smothered mate: the king is boxed in by its own rook and pawns. Every Black move was forced, which is why five plies could be calculated exactly.",
           wrong: {
-            'f7d8': "Nd8+ is a discovered check, but Black blocks with ...Rf7 and the attack is over.",
-            'f7e5': "Ne5+ is check, but after ...Kh8 there is no double check and Black defends."
+            'f7d8': "Nd8+ is a discovered check, but it wastes time: after ...Kh8! the knight has to come back with Nf7+. (...Rf7? fails, because the rook is pinned and Nxf7 wins it.) The double check Nh6+ mates at once.",
+            'f7e5': "Ne5+ is check, but ...Kh8! sidesteps it and you need Nf7+ to start again. The double check Nh6+ is the fast way."
           }
         }
       ]
@@ -183,7 +183,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           explanation: "Line A, Rxb4, wins the queen and should win the game. Line B is even better: Qxh7+! Kxh7 (forced) Rh3 is mate. The bishop covers g8, the f5 pawn covers g6, and the black queen cannot reach the h-file because the c4 bishop blocks the fourth rank. Mate beats a queen, but you only know that if you calculate both lines.",
           wrong: {
             'b1b4': "Rxb4 wins the queen and is strong, but you had mate in two. Compare before you choose.",
-            'e3h3': "Rh3 first? It leaves the back rank: ...Qxb1+ wins your rook with check."
+            'e3h3': "Rh3 first? It threatens mate, but your b1 rook is undefended: ...Qxb1+ takes it with check, and after Bf1 Black has time to defend h7."
           }
         }
       ]
@@ -326,7 +326,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "Attack one of the attackers, and keep a pawn on the h-file.",
           explanation: "...h6 hits the knight, and after it retreats the h-pawn is safe on h6: Black is fine. The other tries fail: ...Bxg5 or ...f5 allow Qxh7 mate, and ...Nf6 runs into Bh7+! Kh8 (...Nxh7 Qxh7 is mate) Nxf7+, winning material. Each defence had to be checked against White's best reply.",
           wrong: {
-            'd7f6': "...Nf6? Bh7+! Kh8 Nxf7+ Rxf7 Qxf7, and White has won the exchange and a pawn. (...Nxh7 Qxh7 is mate.)",
+            'd7f6': "...Nf6? Bxh7+! wins a pawn and keeps the attack: ...Nxh7 Qxh7 is mate, and after ...Kh8 Nxf7+ Rxf7 Qxf7 White has rook and two pawns for two minor pieces with Black's king still exposed.",
             'e7g5': "...Bxg5? removes one attacker, but Qxh7 is still mate, supported by the bishop on d3.",
             'f7f5': "...f5? blocks the bishop, but the knight still supports Qxh7, and it is mate."
           }
@@ -933,8 +933,8 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "Give up the queen to bring the king onto the d-file, then use a double check.",
           explanation: "9.Qd8+!! Kxd8 10.Bg5+ is a double check from the bishop and the rook on d1. After 10...Kc7 11.Bd8 is mate, as in the game; 10...Ke8 11.Rd8 is mate too. Black's extra piece was useless because the king never left the centre and White's pieces were all in play.",
           wrong: {
-            'd3e4': "Qxe4 regains the piece but trades into a normal position. You had mate.",
-            'd3e3': "Qe3 offers a queen trade. A piece down, that is the opposite of what you want."
+            'd3e4': "Qxe4?? takes the knight, but Black's queen on e5 simply takes yours: nothing guards e4. You had mate with Qd8+.",
+            'd3e3': "Qe3 only attacks the e4 knight. You are a piece down and you had mate with Qd8+."
           }
         }
       ]
@@ -997,7 +997,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "Take on h7, then a knight capture uncovers the bishop on d3.",
           explanation: "11.Qxh7+!! Kxh7 12.Nxf6+ is a double check (knight and bishop). After 12...Kh6 (12...Kh8 13.Ng6 is mate) the king is chased up the board: 13.Neg4+ Kg5 14.h4+ Kf4 15.g3+ Kf3 16.Be2+ Kg2 17.Rh2+ Kg1 18.Kd2 mate. Every white move from 12 to 17 was a check.",
           wrong: {
-            'e4f6': "Nxf6+ first? Bxf6 or gxf6, and the queen sacrifice no longer works.",
+            'e4f6': "Nxf6+ first? After ...gxf6 (or ...Rxf6) the knight that should give the double check is gone, and Qxh7+ no longer works.",
             'e5g6': "Ng6? hxg6 hits your queen, and the attack is gone."
           }
         }
@@ -1221,7 +1221,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "The knight has moved off the c-file. Nothing defends c6 any more.",
           explanation: "18.Qxc6 wins the pawn: the bishop has left d7, and with the knight gone from c3 the queen sees c6. Black has some activity (...Re6 hits the queen), but White is a clean pawn up with the better structure. The minority attack created the weakness ten moves ago; the win came when its last defender wandered off.",
           wrong: {
-            'g5f6': "Bxf6? Qxf6, and now the queen guards c6 along the sixth rank.",
+            'g5f6': "Bxf6? Qxf6 gives Black's queen to the attack: f3 is hit twice and the d6 bishop aims at h2, so Qxc6 now runs into ...Bxh2+. Take the pawn first.",
             'a4c5': "Nc5 blocks your own queen's line to c6, and the pawn is safe for now."
           }
         }
@@ -1296,7 +1296,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
         {
           type: 'read',
           title: 'An outpost bought with a bishop',
-          text: "This illustrative game follows a main line of the Sveshnikov Sicilian. Black's ...e5 and ...d6 leave d5 without pawn protection: an outpost. White trades the bishop for the f6 knight, the main guard of d5, and puts a knight there. Black gets the bishop pair and dynamic play with ...f5. The general idea: give up a bishop if it buys a permanent square for a knight.",
+          text: "This illustrative game (composed for this lesson) follows a main line of the Sveshnikov Sicilian. Black's ...e5 and ...d6 leave d5 without pawn protection: an outpost. White trades the bishop for the f6 knight, the main guard of d5, and puts a knight there. Black gets the bishop pair and dynamic play with ...f5. The general idea: give up a bishop if it buys a permanent square for a knight.",
           fen: 'start',
           arrows: [],
           highlights: []
@@ -1358,7 +1358,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
         {
           type: 'read',
           title: 'Strike before the attack starts',
-          text: "This illustrative game shows a common answer to the Grand Prix Attack, where White plays Nc3 and f4 against the Sicilian and aims for a kingside attack. Black does not wait: ...e6 and ...d5 challenge e4 at once. The idea works in many openings: when your opponent commits pawns to the wing, the centre is often where they are weakest.",
+          text: "This illustrative game (composed for this lesson) shows a common answer to the Grand Prix Attack, where White plays Nc3 and f4 against the Sicilian and aims for a kingside attack. Black does not wait: ...e6 and ...d5 challenge e4 at once. The idea works in many openings: when your opponent commits pawns to the wing, the centre is often where they are weakest.",
           fen: 'start',
           arrows: [],
           highlights: []
@@ -1409,7 +1409,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
         {
           type: 'read',
           title: 'Open files are highways',
-          text: "This illustrative game follows the Exchange Slav, where the pawn structure is symmetrical and the c-file is the only open file. In such positions small advantages decide: the side that controls the open file can bring a rook to the seventh rank, where it attacks pawns and confines the king. Rooks belong on open files; get there first.",
+          text: "This illustrative game (composed for this lesson) follows the Exchange Slav, where the pawn structure is symmetrical and the c-file is the only open file. In such positions small advantages decide: the side that controls the open file can bring a rook to the seventh rank, where it attacks pawns and confines the king. Rooks belong on open files; get there first.",
           fen: 'start',
           arrows: [],
           highlights: []

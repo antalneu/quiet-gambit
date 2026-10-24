@@ -9,7 +9,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
       side: 'black',
       group: 'vs-d4',
       name: "Queen's Gambit Declined",
-      aliases: ['QGD', 'Orthodox Defence', "2...e6 against the Queen's Gambit"],
+      aliases: ['QGD', "2...e6 against the Queen's Gambit"],
       eco: 'D30-D69',
       root: ['d2d4', 'd7d5', 'c2c4', 'e7e6'],
       summary: "Black holds d5 with ...e6: the most classical answer to the Queen's Gambit, solid and respected at every level.",
@@ -30,7 +30,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
       side: 'black',
       group: 'vs-d4',
       name: 'Slav Defence',
-      aliases: ['Slav', 'Semi-Slav'],
+      aliases: ['Slav'],
       eco: 'D10-D19, D43-D49',
       root: ['d2d4', 'd7d5', 'c2c4', 'c7c6'],
       summary: 'Black supports d5 with the c-pawn, keeping the c8-bishop free; solid, popular and full of choice from quiet to very sharp.',
@@ -3303,7 +3303,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'f1e2', san: 'Be2' },
             { uci: 'b7b5', san: 'b5', note: 'Gains time on the queen and space on the queenside.' },
             { uci: 'c4b3', san: 'Qb3' },
-            { uci: 'c7c5', san: 'c5', note: 'The queen has moved four times; Black hits d4.' }
+            { uci: 'c7c5', san: 'c5', note: 'The queen has moved three times; Black hits d4.' }
           ]
         },
         {

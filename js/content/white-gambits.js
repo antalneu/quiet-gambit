@@ -1595,7 +1595,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'f3g5', san: 'Ng5', note: "A second attacker on e4; Black's king is airy after ...f5." }
           ] },
         { id: 'bc4', name: '5...Nxe4 6.Bc4', kind: 'Accepted',
-          summary: "White develops and castles first. After Re1 the knight must retreat and White regains material, reaching an open position with active pieces.",
+          summary: "White develops and castles first. After Re1 the knight must retreat and White wins back one pawn, keeping active pieces for the other.",
           moves: [
             { uci: 'f6e4', san: 'Nxe4' },
             { uci: 'f1c4', san: 'Bc4', note: "Development before material." },
@@ -1606,7 +1606,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'e4f6', san: 'Nf6' },
             { uci: 'd5e7', san: 'Nxe7+' },
             { uci: 'c6e7', san: 'Nxe7' },
-            { uci: 'f3d4', san: 'Nxd4', note: "Material is level; White has the freer game and the bishop." }
+            { uci: 'f3d4', san: 'Nxd4', note: "White is still a pawn down, but has the bishop pair, the open e-file and the freer game as compensation." }
           ] },
         { id: 'be7', name: '5...Be7 (declined)', kind: 'Declined',
           summary: "Black declines the e4 pawn and keeps a solid position. White regains d4 and the game is level.",
