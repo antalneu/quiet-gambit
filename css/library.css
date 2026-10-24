@@ -108,9 +108,9 @@
 .segmented { display: inline-flex; border: 1.5px solid var(--ink); border-radius: var(--r-btn); overflow: hidden; width: max-content; max-width: 100%; }
 .segmented a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; text-decoration: none; color: var(--ink); }
 .segmented a + a { border-left: 1.5px solid var(--ink); }
-.segmented a[aria-current="page"] { background: var(--ink); }
-.segmented a[aria-current="page"] .side { color: var(--paper); }
-.segmented a[aria-current="page"] .side-mark { box-shadow: inset 0 0 0 1.5px var(--paper); }
+.segmented a[aria-current] { background: var(--ink); }
+.segmented a[aria-current] .side { color: var(--paper); }
+.segmented a[aria-current] .side-mark { box-shadow: inset 0 0 0 1.5px var(--paper); }
 .segmented a:focus-visible { outline-offset: -4px; outline-color: var(--accent); }
 .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-5); }
 .filter-links { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -247,7 +247,7 @@
 .pip.is-review-done { background: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), 0 0 0 2px var(--accent-board); }
 
 /* Focus on the dark selected segment */
-.segmented a[aria-current="page"]:focus-visible { outline-color: var(--paper); }
+.segmented a[aria-current]:focus-visible { outline-color: var(--paper); }
 
 /* Nav: never wrap; shorten "White repertoire" to "White" in the tight band. */
 .nav a { white-space: nowrap; }

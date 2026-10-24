@@ -28,6 +28,11 @@
   var PITFALL_NOTE = { Trap: 'A concrete trick', Mistake: 'A common wrong move or plan', Risk: 'What can go wrong strategically' };
   A.GROUPS = GROUPS; A.OPEN_LABEL = OPEN_LABEL; A.GAMBIT_LABEL = GAMBIT_LABEL; A.GROUP_SUB = GROUP_SUB; A.CAT_LABEL = CAT_LABEL;
 
+  // Result counts are announced once typing pauses, not on every keystroke.
+  var announceT;
+  function announceSoon(t) { window.clearTimeout(announceT); announceT = window.setTimeout(function () { A.status(t); }, 700); }
+  A.announceSoon = announceSoon;
+
   function plural(n, w) { return n + ' ' + (n === 1 ? w : w.replace(/([^aeiou])y$/, '$1ie') + 's'); }
   A.plural = plural;
 
@@ -122,9 +127,9 @@
 
   function sideSwitch(base, side, labels) {
     return '<nav class="segmented" aria-label="Side">' +
-      '<a href="' + base + '"' + (!side ? ' aria-current="page"' : '') + '>Both sides</a>' +
+      '<a href="' + base + '"' + (!side ? ' aria-current="true"' : '') + '>All</a>' +
       ['white', 'black'].map(function (s) {
-        return '<a href="' + base + '/' + s + '"' + (s === side ? ' aria-current="page"' : '') + '>' + A.side(s, labels[s]) + '</a>';
+        return '<a href="' + base + '/' + s + '"' + (s === side ? ' aria-current="true"' : '') + '>' + A.side(s, labels[s]) + '</a>';
       }).join('') + '</nav>';
   }
 
@@ -160,7 +165,7 @@
     }
     var body = (side ? [side] : ['white', 'black']).map(function (s) {
       var gs = group ? [group] : GROUPS[s];
-      return '<section class="area-side" aria-labelledby="as-' + s + '">' +
+      return '<section class="area-side" ' + (side ? 'aria-label="' + OPEN_LABEL[s] + '"' : 'aria-labelledby="as-' + s + '"') + '>' +
         (side ? '' : '<div class="section-head"><h2 class="h2" id="as-' + s + '">' + A.side(s, OPEN_LABEL[s]) + '</h2></div>') +
         gs.map(function (g) { return groupSection(s, g, side ? 'h2' : 'h3'); }).join('') + '</section>';
     }).join('');
@@ -370,7 +375,7 @@
           (x.aliases.length ? '<p class="small muted">Also called: ' + esc(x.aliases.join(', ')) + '</p>' : '')
       }) +
       '<div class="line-grid">' +
-        '<div class="line-board"><div id="line-board"></div>' + lineButtons + '<p class="line-now" id="line-now" aria-live="polite"></p><div id="line-stepper"></div>' +
+        '<div class="line-board"><div id="line-board"></div><p class="line-now" id="line-now" aria-live="polite"></p><div id="line-stepper"></div>' + lineButtons +
           '<div class="btn-row"><a class="btn btn-secondary btn-sm" id="to-explorer" href="' + A.explorerHref(x.side, x.defining) + '">Open in the explorer</a></div></div>' +
         '<div class="line-detail">' +
           (isG ? '<div class="detail-block character-block">' + A.characterTag(x.character) + '<p class="prose">' + esc(x.characterNote) + '</p></div>' : '') +
@@ -482,7 +487,7 @@
         '<div class="field field-search"><label for="g-q">Search gambits</label><input id="g-q" type="search" placeholder="Name, other name or moves" value="' + esc(q.q || '') + '"></div>' +
         '<div class="field"><label for="g-char">Character</label><select id="g-char">' + opt('', 'Any character', q.character) + ['Established', 'Playable', 'Speculative'].map(function (v) { return opt(v, v, q.character); }).join('') + '</select></div>' +
         '<div class="field"><label for="g-level">Difficulty</label><select id="g-level">' + opt('', 'Any difficulty', q.level) + ['Beginner', 'Intermediate', 'Advanced'].map(function (v) { return opt(v, v, q.level); }).join('') + '</select></div>' +
-      '</form><div class="results-bar"><p id="g-count" class="muted" role="status"></p><button type="button" class="btn btn-quiet btn-sm" id="g-clear">Clear filters</button></div><div id="g-results"></div></div>';
+      '</form><div class="results-bar"><p id="g-count" class="muted"></p><button type="button" class="btn btn-quiet btn-sm" id="g-clear">Clear filters</button></div><div id="g-results"></div></div>';
 
     var ORDER = { Established: 0, Playable: 1, Speculative: 2 };
     function apply() {
@@ -495,6 +500,7 @@
         return true;
       }).sort(function (a, b) { return ORDER[a.character] - ORDER[b.character] || a.name.localeCompare(b.name); });
       $('#g-count').textContent = res.length === base.length ? 'Showing all ' + plural(res.length, 'gambit') : res.length + ' of ' + plural(base.length, 'gambit') + ' match';
+      announceSoon($('#g-count').textContent);
       $('#g-clear').hidden = !(f.q || f.character || f.level);
       var sides = side ? [side] : ['white', 'black'];
       $('#g-results').innerHTML = res.length ? sides.map(function (s) {
@@ -602,7 +608,7 @@
     }
 
     main.innerHTML = '<div class="container">' + A.pageHead({
-        trail: [['Library']], title: 'Chess Library', next: true,
+        trail: [['Library']], title: 'Chess Library',
         lede: 'Every opening family, variation, move line and gambit in one index. Search by name, other names, moves or ideas, or browse by category below.',
         extra: '<dl class="lib-counts">' +
           '<div><dt>Opening families</dt><dd>' + (t.families.white + t.families.black) + '<span>' + t.families.white + ' White, ' + t.families.black + ' Black</span></dd></div>' +
@@ -614,19 +620,19 @@
       }) +
       '<form class="filters lib-filters" role="search" aria-label="Search the library" onsubmit="return false">' +
         '<div class="field field-search field-wide"><label for="l-q">Search the library</label><input id="l-q" type="search" autocomplete="off" placeholder="Najdorf, Spanish, 1.e4 c5 2.c3, Maroczy Bind..." value="' + esc(q.q || '') + '" aria-describedby="l-q-help"><p id="l-q-help" class="small muted">Finds names, other names, ECO codes, ideas and move sequences.</p></div>' +
-        '<div class="field"><label for="l-type">Type</label><select id="l-type">' + opt('', 'Everything', q.type) + Object.keys(TYPE_LABEL).map(function (k) { return opt(k, TYPE_LABEL[k] + 's', q.type); }).join('') + '</select></div>' +
-        '<div class="field"><label for="l-side">Side</label><select id="l-side">' + opt('', 'Both sides', q.side) + opt('white', 'White', q.side) + opt('black', 'Black', q.side) + '</select></div>' +
+        '<details class="more-filters" id="l-more"><summary>Filters and sorting</summary><div class="more-filters-grid">' + '<div class="field"><label for="l-type">Type</label><select id="l-type">' + opt('', 'Everything', q.type) + Object.keys(TYPE_LABEL).map(function (k) { return opt(k, TYPE_LABEL[k] + 's', q.type); }).join('') + '</select></div>' +
+        '<div class="field"><label for="l-side">Side</label><select id="l-side">' + opt('', 'Any side', q.side) + opt('white', 'White', q.side) + opt('black', 'Black', q.side) + '</select></div>' +
         '<div class="field"><label for="l-first">First move</label><select id="l-first">' + opt('', 'Any first move', q.first) + Object.keys(FIRST_LABEL).map(function (k) { return opt(k, FIRST_LABEL[k], q.first); }).join('') + '</select></div>' +
         '<div class="field"><label for="l-cat">Category</label><select id="l-cat">' + opt('', 'All categories', q.cat) + Object.keys(CAT_LABEL).map(function (k) { return opt(k, CAT_LABEL[k], q.cat); }).join('') + '</select></div>' +
-        '<div class="field"><label for="l-family">Opening family</label><select id="l-family">' + opt('', 'Any family', q.family) + famOptions(q.family) + '</select></div>' +
+        '<div class="field"><label for="l-family">Opening family</label><select id="l-family">' + opt('', 'Any family', q.family) + famOptions(q.family, q.side, q.cat) + '</select></div>' +
         '<div class="field"><label for="l-variation">Variation</label><select id="l-variation"' + (q.family ? '' : ' disabled') + '>' + opt('', q.family ? 'Any variation' : 'Choose a family first', q.variation) + varOptions(q.family, q.variation) + '</select></div>' +
         '<div class="field"><label for="l-level">Difficulty</label><select id="l-level">' + opt('', 'Any difficulty', q.level) + ['Beginner', 'Intermediate', 'Advanced'].map(function (v) { return opt(v, v, q.level); }).join('') + '</select></div>' +
         '<div class="field"><label for="l-style">Playing style</label><select id="l-style">' + opt('', 'Any style', q.style) + ['Solid', 'Positional', 'Flexible', 'Attacking', 'Sharp'].map(function (v) { return opt(v, v, q.style); }).join('') + '</select></div>' +
         '<div class="field"><label for="l-time">Study time</label><select id="l-time">' + opt('', 'Any study time', q.time) + Object.keys(TIME_LABEL).map(function (k) { return opt(k, TIME_LABEL[k], q.time); }).join('') + '</select></div>' +
-        '<div class="field"><label for="l-sort">Sort by</label><select id="l-sort">' + Object.keys(SORT_LABEL).map(function (k) { return opt(k, SORT_LABEL[k], q.sort || ''); }).join('') + '</select></div>' +
+        '<div class="field"><label for="l-sort">Sort by</label><select id="l-sort">' + Object.keys(SORT_LABEL).map(function (k) { return opt(k, SORT_LABEL[k], q.sort || ''); }).join('') + '</select></div></div></details>' +
       '</form>' +
       '<div class="active-filters" id="l-active" aria-label="Active filters"></div>' +
-      '<div class="results-bar"><p id="l-count" role="status" class="muted"></p></div>' +
+      '<div class="results-bar"><p id="l-count" class="muted"></p></div>' +
       '<div id="l-results"></div>' +
       '<div id="l-browse">' + browseIndex() + '</div></div>';
 
@@ -634,6 +640,8 @@
     var PAGE = 30, shown = PAGE;
     function current() { var o = {}; Object.keys(ids).forEach(function (k) { o[k] = $('#' + ids[k]).value.trim(); }); return o; }
     if (!q.sort) $('#l-sort').value = q.q ? 'best' : 'moves';
+    // Wide screens show every filter; phones fold them away unless one is already in use.
+    if (window.matchMedia('(min-width: 761px)').matches || q.sort || FILTERS.some(function (k) { return q[k]; })) $('#l-more').open = true;
 
     function apply(fromField) {
       var f = current();
@@ -692,8 +700,8 @@
         $('#l-results').innerHTML = '';
       } else {
         var lessonsHit = f.q ? Q.lessons.filter(function (l) {
-          var text = [l.title, l.summary, l.objective].join(' ').toLowerCase();
-          return f.q.toLowerCase().split(/\s+/).every(function (w) { return text.indexOf(w) >= 0; });
+          var text = [l.title, l.summary, l.objective].join(' ').toLowerCase().replace(/'/g, '');
+          return f.q.toLowerCase().replace(/'/g, '').split(/\s+/).every(function (w) { return text.indexOf(w) >= 0; });
         }) : [];
         $('#l-count').textContent = res.length ? plural(res.length, 'entry') + ' found' + (lessonsHit.length ? ', and ' + plural(lessonsHit.length, 'lesson') : '') : 'No entries found';
         $('#l-results').innerHTML = (res.length ? '<ol class="results">' + res.slice(0, shown).map(function (r) { return resultRow(r.item); }).join('') + '</ol>' +
@@ -705,6 +713,7 @@
       var state = {};
       Object.keys(ids).forEach(function (k) { state[k] = f[k]; });
       if (state.sort === (f.q ? 'best' : 'moves')) state.sort = '';
+      announceSoon($('#l-count').textContent);
       A.replaceHash('#/library' + A.buildQuery(state));
     }
     var form = $('.lib-filters');

@@ -372,7 +372,8 @@
     return x.side + '-' + String(g || '').replace(/^vs-/, 'vs-');
   }
   var index = [];
-  function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9.+#=\s-]/g, ' '); }
+  // Apostrophes vanish (so "queens gambit" finds "Queen's Gambit"); other punctuation becomes a space.
+  function norm(s) { return String(s || '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9.+#=\s-]/g, ' '); }
   function addIndex(o) {
     o.hay = norm([o.name].concat(o.alt || []).join(' | '));
     o.body = norm(o.body || '');
@@ -400,7 +401,11 @@
   });
   // Moves typed as "1.e4 c5 2.c3" or "e4 c5 c3" match a move sequence anywhere from the start.
   function moveTokens(q) {
-    var t = String(q).replace(/\d+\.(\.\.)?/g, ' ').trim().split(/\s+/).filter(Boolean);
+    var t = String(q).replace(/\d+\.(\.\.)?/g, ' ').trim().split(/\s+/).filter(Boolean).map(function (w) {
+      // Typed in lower case: "nf3" is Nf3 and "o-o" is O-O; "bxc3" stays a pawn capture.
+      if (/^[o0]-[o0](-[o0])?$/i.test(w)) return w.toUpperCase().replace(/0/g, 'O');
+      return /^[kqrn][a-h1-8x]/.test(w) || /^b[a-h][1-8]/.test(w) || /^b[1-8]x?[a-h]/.test(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+    });
     var sanRe = /^(O-O(-O)?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|[a-h](x[a-h])?[1-8](=[QRBN])?)[+#]?$/;
     return t.length && t.every(function (w) { return sanRe.test(w); }) ? t.map(function (w) { return w.replace(/[+#]$/, ''); }) : null;
   }

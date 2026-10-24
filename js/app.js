@@ -159,12 +159,13 @@
   $('.skip-link').addEventListener('click', function (e) { e.preventDefault(); main.focus(); main.scrollIntoView(); });
 
   // ------------------------------------------------------------ query helpers
+  function safeDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
   A.parseQuery = function (q) {
     var out = {};
     (q || '').split('&').forEach(function (pair) {
       if (!pair) return;
       var i = pair.indexOf('=');
-      var k = decodeURIComponent(i < 0 ? pair : pair.slice(0, i)), v = i < 0 ? '' : decodeURIComponent(pair.slice(i + 1).replace(/\+/g, ' '));
+      var k = safeDecode(i < 0 ? pair : pair.slice(0, i)), v = i < 0 ? '' : safeDecode(pair.slice(i + 1).replace(/\+/g, ' '));
       out[k] = v;
     });
     return out;
@@ -316,7 +317,7 @@
     var ls = pathLessons(p), n = A.pathNext(p), active = P.activePath() === p.id;
     var done = A.countDone(ls);
     main.innerHTML = '<div class="container">' + A.pageHead({
-        crumbs: '<a href="#/paths">Learning paths</a> / ' + esc(p.title),
+        trail: [['Learning paths', '#/paths'], [p.title]],
         title: p.title,
         meta: A.side(p.side) + A.tag(p.style) + '<span>' + ls.length + ' lessons</span><span>' + done + ' completed</span>',
         lede: p.summary,
@@ -386,7 +387,7 @@
           lineGroup('White and Black Gambits', lineOpts.filter(function (x) { return x.kind === 'gambit'; })) + '</select></div>' +
         '<div class="field"><label for="f-state">Status</label><select id="f-state">' + opt('', 'Any status', q.state) + Object.keys(STATE_LABEL).map(function (k) { return opt(k, STATE_LABEL[k], q.state); }).join('') + '</select></div>' +
       '</form>' +
-      '<div class="results-bar"><p id="results-count" role="status" class="muted"></p><button type="button" class="btn btn-quiet btn-sm" id="clear-filters">Clear filters</button></div>' +
+      '<div class="results-bar"><p id="results-count" class="muted"></p><button type="button" class="btn btn-quiet btn-sm" id="clear-filters">Clear filters</button></div>' +
       '<div id="results"></div></div>';
 
     var ids = { q: 'f-q', side: 'f-side', cat: 'f-cat', level: 'f-level', time: 'f-time', line: 'f-line', state: 'f-state' };
@@ -404,6 +405,7 @@
         return true;
       });
       $('#results-count').textContent = res.length === Q.lessons.length ? 'Showing all ' + res.length + ' lessons' : res.length + ' of ' + Q.lessons.length + ' lessons match';
+      if (A.announceSoon) A.announceSoon($('#results-count').textContent);
       $('#clear-filters').hidden = !Object.keys(f).some(function (k) { return f[k]; });
       $('#results').innerHTML = res.length ? A.lessonList(res) :
         '<div class="empty-state"><p class="h4">No lessons match these filters.</p><p class="muted">Try a different level or category, or clear the filters to see everything.</p><button type="button" class="btn btn-secondary btn-sm" data-clear>Clear filters</button></div>';
@@ -556,7 +558,7 @@
 
   // ------------------------------------------------------------ router
   var REDIRECT = { path: '#/progress', tactics: '#/category/tactics', middlegames: '#/category/strategy', endgames: '#/category/endgames' };
-  var NAV_SECTION = { paths: 'paths', library: 'library', lessons: 'lessons', category: 'lessons', lesson: 'lessons', progress: 'coach', coach: 'coach',
+  var NAV_SECTION = { paths: 'paths', library: 'library', lessons: 'lessons', category: 'lessons', lesson: 'lessons', progress: 'progress', coach: 'coach',
     openings: 'openings', family: 'openings', opening: 'openings', gambits: 'gambits', gambit: 'gambits', explorer: 'explorer' };
 
   function route() {
@@ -571,7 +573,7 @@
     var r = route(), p = r.parts, head = p[0] || '';
     if (REDIRECT[head] && p.length === 1) { location.replace(REDIRECT[head]); return; }
     var result, section = NAV_SECTION[head] || head;
-    var id = p[1] ? decodeURIComponent(p[1]) : '';
+    var id = p[1] ? safeDecode(p[1]) : '';
     if (head === '') result = A.views.home();
     else if (head === 'paths') result = A.views.paths(id);
     else if (head === 'library') result = A.views.library(r.query);

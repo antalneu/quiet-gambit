@@ -172,7 +172,7 @@
     var form = '<form class="coach-form" id="coach-form" aria-describedby="coach-help" novalidate>' +
       '<p id="coach-help" class="small muted">All four questions are optional. Your answers stay in this browser.</p>' +
       '<fieldset><legend class="h4">Your experience</legend><div class="choices">' + EXPERIENCE.map(function (e) { return radio('experience', e[0], e[1], e[2], cur.experience); }).join('') + '</div></fieldset>' +
-      '<fieldset><legend class="h4">What you want to work on</legend><p class="small muted">Choose any. The first ones you tick count most.</p><div class="choices choices-wide">' + GOALS.map(function (g) { return check('goals', g[0], g[1], (cur.goals || []).indexOf(g[0]) >= 0); }).join('') + '</div></fieldset>' +
+      '<fieldset><legend class="h4">What you want to work on</legend><p class="small muted">Choose any. The coach gives each goal you tick a matching path, in the order listed here.</p><div class="choices choices-wide">' + GOALS.map(function (g) { return check('goals', g[0], g[1], (cur.goals || []).indexOf(g[0]) >= 0); }).join('') + '</div></fieldset>' +
       '<fieldset><legend class="h4">Time for one session</legend><div class="choices choices-row">' + TIMES.map(function (t) { return radio('time', t, t + ' minutes', '', cur.time); }).join('') + '</div></fieldset>' +
       '<fieldset><legend class="h4">How you like to play</legend><div class="choices">' + STYLES.map(function (s) { return radio('style', s[0], s[1], s[2], cur.style); }).join('') + '</div></fieldset>' +
       '<div class="btn-row"><button type="submit" class="btn btn-primary">' + (prefs ? 'Update my plan' : 'Show my plan') + '</button>' +
@@ -230,8 +230,8 @@
       }) +
       '<div class="coach-stats" aria-label="Your progress at a glance">' +
         '<a href="#/progress"><span class="stat-num">' + done + '</span><span>completed</span></a>' +
-        '<a href="#/progress#ip-h"><span class="stat-num">' + inProg + '</span><span>in progress</span></a>' +
-        '<a href="#/progress#rv-h"><span class="stat-num">' + reviewN + '</span><span>ready for review</span></a>' +
+        '<a href="#/progress"><span class="stat-num">' + inProg + '</span><span>in progress</span></a>' +
+        '<a href="#/progress"><span class="stat-num">' + reviewN + '</span><span>ready for review</span></a>' +
         '<a href="#/progress"><span class="stat-num">' + refreshN + '</span><span>due for a refresh</span></a>' +
       '</div>' +
       (prefs ? plan + '<section class="section section-tight" aria-labelledby="pref-h"><h2 class="h2" id="pref-h">Your answers</h2>' + form + '</section>'

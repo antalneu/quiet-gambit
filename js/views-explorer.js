@@ -48,7 +48,7 @@
         lede: 'Follow an opening move by move. At each position you see the choices the library covers, the variations that pass through, and where another move order reaches the same position. Openings branch with the opponent\'s replies: nothing here is forced.',
         extra: '<div class="toolbar"><nav class="segmented" aria-label="Repertoire side">' +
           ['white', 'black'].map(function (s) {
-            return '<a href="' + A.explorerHref(s) + '"' + (s === side ? ' aria-current="page"' : '') + '>' + A.side(s, A.OPEN_LABEL[s]) + '</a>';
+            return '<a href="' + A.explorerHref(s) + '"' + (s === side ? ' aria-current="true"' : '') + '>' + A.side(s, A.OPEN_LABEL[s]) + '</a>';
           }).join('') + '</nav>' +
           '<p class="small muted">' + (side === 'white' ? 'Your moves are White\'s. Black\'s replies show what you need to be ready for.' : 'Your moves are Black\'s. White\'s moves show what you need to be ready for.') + '</p></div>'
       }) +
@@ -59,7 +59,7 @@
             '<button type="button" class="btn btn-secondary btn-sm" data-go="back" aria-label="Back one move">' + U.ICON.prev + '<span>Back</span></button>' +
             '<button type="button" class="btn btn-secondary btn-sm" data-go="fwd" aria-label="Forward one move">' + '<span>Forward</span>' + U.ICON.next + '</button>' +
           '</div>' +
-          '<p class="small muted ex-help">Play a move on the board, pick one from the list, or use the arrow keys: left goes back, right goes forward.</p>' +
+          '<p class="small muted ex-help">Play a move on the board, pick one from the list, or use the Back and Forward buttons. With focus on the move list or these buttons, the left and right arrow keys do the same.</p>' +
         '</div>' +
         '<div class="ex-panel">' +
           '<nav class="ex-path" aria-label="Moves played" id="ex-path"></nav>' +
@@ -74,7 +74,7 @@
           '<div class="field"><label for="cmp-a">First</label><select id="cmp-a"><option value="">Choose a variation</option>' + entryOptions(side, q.a) + '</select></div>' +
           '<div class="field"><label for="cmp-b">Second</label><select id="cmp-b"><option value="">Choose a variation</option>' + entryOptions(side, q.b) + '</select></div>' +
           '<div class="field field-action"><button type="button" class="btn btn-secondary btn-sm" data-cmp-here>Use the lines at the current position</button></div>' +
-        '</form><div id="cmp-out" aria-live="polite"></div></section>' +
+        '</form><div id="cmp-out"></div></section>' +
     '</div>';
 
     var frame = U.boardFrame($('#ex-board'), { fen: 'start', interactive: true, label: 'Explorer board', orientation: side === 'black' ? 'b' : 'w', note: '' });
@@ -237,6 +237,9 @@
       if (dir === 'start') go(root, true);
       else if (dir === 'back' && node.parent) go(node.parent, true);
       else if (dir === 'fwd' && node.children.length) go(forward[node.key] || node.children[0], true);
+      // A control that just became disabled loses focus: keep it inside the controls.
+      var a = document.activeElement;
+      if (a && a.disabled) { var alt = $$('.ex-controls button').filter(function (b) { return !b.disabled; })[0]; if (alt) alt.focus(); }
     }
     function onKey(e) {
       if (!ex.contains(e.target) || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
@@ -247,6 +250,7 @@
     }
     $('#compare form').addEventListener('change', function () {
       compare();
+      A.status('Comparison updated.');
       A.replaceHash('#/explorer' + A.buildQuery({ side: side, at: node.path.join('.'), a: $('#cmp-a').value, b: $('#cmp-b').value }));
     });
 
