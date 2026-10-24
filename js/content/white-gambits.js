@@ -2581,14 +2581,14 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
         {
           type: 'puzzle',
           title: 'Punish the castling',
-          fen: 'r1b2rk1/pppnqppp/2n1p3/3pP3/3P1NQ1/2N5/PPP2PP1/R3KB1R w KQ - 6 11',
-          prompt: "Black has just castled with 10...O-O?. White to move: find the forcing win.",
-          solution: ['f4h5'],
-          hint: "One knight jump threatens mate on g7, and the h-file rook is ready for h7.",
-          explanation: "11.Nh5! threatens Qxg7 mate. The defences fail: after 11...g6, the rook takes on h7 or the knight goes to f6 with check, opening Black's king, and the h-file decides. This is the point of the gambit: with no knight on f6, h7 and g7 are hard to defend.",
+          fen: 'r1b2rk1/pp1n1ppp/1qn1p3/2ppP2Q/3P4/2N5/PPP2PP1/1K1R3R w - - 0 15',
+          prompt: "Illustrative position: Black has castled short into the open h-file. White to move: mate in one.",
+          solution: ['h5h7'],
+          hint: "Which black piece used to guard h7? It is no longer on f6.",
+          explanation: "15.Qxh7 is mate. The h1 rook protects the queen along the open h-file, the king cannot go to f8 because its own rook is there, and no black piece can take on h7: the knight that would normally defend from f6 was driven to d7 by e5. That is the whole idea of h4 and hxg5.",
           wrong: {
-            'h1h7': "11.Rxh7? Kxh7 and White has no immediate follow-up; prepare with the knight first.",
-            'g4h5': "11.Qh5 threatens h7, but ...h6 or ...Nf6 holds for now."
+            'h5f7': "15.Qxf7+? Rxf7: the rook guards f7.",
+            'd1d3': "15.Rd3 prepares a rook lift, but it gives Black time for ...Nf6 or ...h6."
           }
         }
       ]

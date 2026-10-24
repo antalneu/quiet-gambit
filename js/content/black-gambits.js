@@ -743,8 +743,9 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           text: "After 4.d3 and Qe2, White attacks the e4 pawn or knight repeatedly. If Black cannot keep it supported, the main asset of the counter-gambit disappears." },
         { kind: 'Risk', side: 'white', title: 'The weakened diagonals',
           text: "2.f4 opened the a7-g1 and e1-h4 diagonals. With a bishop on c5, ...Nf2 and ...Bf2+ tricks appear whenever White develops carelessly; Qe2 is often the necessary defence." },
-        { kind: 'Mistake', side: 'white', title: 'Developing the king bishop first',
-          text: "In the 4.d3 line, natural bishop moves such as 7.Bd3 or 7.Be2 ignore the pressure on f2; the knight jump to f2 is the danger (see the lesson)." }
+        { kind: 'Mistake', side: 'white', title: '7.Be3? and the hole on e3',
+          text: "In the 4.d3 line, challenging the c5 bishop with 7.Be3? simply loses a piece: after 2.f4 no pawn guards e3, and 7...Bxe3 cannot be answered by a recapture (see the lesson).",
+          uci: ['e2e4', 'e7e5', 'f2f4', 'd7d5', 'e4d5', 'e5e4', 'd2d3', 'g8f6', 'd3e4', 'f6e4', 'g1f3', 'f8c5', 'c1e3', 'c5e3'] }
       ],
       lines: [
         { id: 'e4-d3', name: '3.exd5 e4 4.d3', kind: 'Main line',
@@ -1679,7 +1680,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
       eco: 'B01',
       defining: ['e2e4', 'd7d5', 'e4d5', 'g8f6', 'd2d4', 'c8g4'],
       moves: '1.e4 d5 2.exd5 Nf6 3.d4 Bg4',
-      aliases: ['Portuguese Variation', 'Jadoul Variation'],
+      aliases: ['Portuguese Variation'],
       character: 'Speculative',
       characterNote: "If White keeps the pawn with 4.f3 and develops carefully, Black's compensation is generally judged insufficient; if White declines, Black simply regains the pawn. A lively practical choice.",
       difficulty: 'Intermediate',
@@ -1715,8 +1716,9 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           text: "After f3 and c4, White's king has no quick shelter. Checks such as ...Bb4+ and ...Qe7+ on the open e-file can win time or material if White develops carelessly." },
         { kind: 'Risk', side: 'black', title: 'No attack, no compensation',
           text: "If White castles and keeps the d5 pawn protected, Black is simply a pawn down. The gambit needs active, concrete play from the start." },
-        { kind: 'Mistake', side: 'black', title: 'Grabbing back d5 too soon',
-          text: "After 4.f3 Bf5 5.Bb5+, blocking with the bishop's pawn structure intact matters: ...Nbd7 keeps development flowing, while ...c6 dxc6 simply gives White a second pawn." }
+        { kind: 'Mistake', side: 'black', title: 'Taking on d5 with the bishop hanging',
+          text: "Against 4.Be2, grabbing at once with 4...Qxd5 or 4...Nxd5 drops the g4 bishop to Bxg4. Trade first with 4...Bxe2, then recapture on d5.",
+          uci: ['e2e4', 'd7d5', 'e4d5', 'g8f6', 'd2d4', 'c8g4', 'f1e2', 'd8d5', 'e2g4'] }
       ],
       lines: [
         { id: 'f3', name: '4.f3 Bf5 5.Bb5+ Nbd7 6.c4', kind: 'Accepted',
@@ -2518,6 +2520,172 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
       ]
     },
 
+    /* --------------------------------------------- 15. BLUMENFELD */
+    {
+      id: 'black-gambits-15',
+      category: 'black-gambits',
+      side: 'black',
+      title: 'Blumenfeld Gambit: the rolling centre',
+      level: 'Advanced',
+      minutes: 8,
+      objective: "Build the Blumenfeld pawn centre and use the ...e4 push to fork two white pieces.",
+      summary: "The b-pawn buys a central pawn mass; when it advances, it can win material.",
+      prerequisites: ['tactics-1'],
+      related: { gambits: ['bg-blumenfeld', 'bg-benko'], openings: ['b-benoni'] },
+      steps: [
+        {
+          type: 'line',
+          title: 'Building the centre',
+          orientation: 'b',
+          fen: 'start',
+          text: "Black gives the b-pawn to lure White's c-pawn away, then recaptures towards the centre.",
+          moves: [
+            { uci: 'd2d4', san: 'd4' },
+            { uci: 'g8f6', san: 'Nf6' },
+            { uci: 'c2c4', san: 'c4' },
+            { uci: 'e7e6', san: 'e6' },
+            { uci: 'g1f3', san: 'Nf3' },
+            { uci: 'c7c5', san: 'c5' },
+            { uci: 'd4d5', san: 'd5' },
+            { uci: 'b7b5', san: 'b5', note: "The Blumenfeld offer." },
+            { uci: 'd5e6', san: 'dxe6' },
+            { uci: 'f7e6', san: 'fxe6', note: "Towards the centre, opening the f-file." },
+            { uci: 'c4b5', san: 'cxb5' },
+            { uci: 'd7d5', san: 'd5', note: "Pawns on c5, d5 and e6: the dream centre." }
+          ]
+        },
+        {
+          type: 'read',
+          title: 'Pawns that want to move',
+          orientation: 'b',
+          fen: 'rn1qkb1r/pb4pp/4pn2/1Ppp4/8/4PN2/PP3PPP/RNBQKB1R w KQkq - 1 8',
+          text: "Black's central pawns are strongest when they advance: ...e5 and ...e4 kick White's knight from f3 and open the b7 and d6 bishops' lines to the kingside. White's task is to blockade them with pieces on d4 or e4 before they roll.",
+          arrows: [['e6', 'e5'], ['b7', 'g2']],
+          highlights: ['e4', 'd4']
+        },
+        {
+          type: 'puzzle',
+          title: 'The pawn fork',
+          orientation: 'b',
+          fen: 'r4rk1/pb1nq1pp/3b1n2/1Pppp3/8/2NBPN2/PPQ2PPP/R1B2RK1 b - - 0 12',
+          prompt: "Illustrative Blumenfeld structure. Black to move: use the centre to win material.",
+          solution: ['e5e4'],
+          hint: "One pawn push attacks two white pieces at once.",
+          explanation: "12...e4! forks the d3 bishop and the f3 knight, and the pawn is protected by d5 and the f6 knight. If 13.Be2, 13...exf3 wins a piece; if 13.Bxe4 dxe4, the new e4 pawn hits f3 again. White can only limit the damage, for example 13.Nxe4 dxe4 14.Bxe4 Nxe4 15.Qxe4, giving a piece for two pawns.",
+          wrong: {
+            'c5c4': "12...c4 hits only the bishop, which retreats to e2.",
+            'd5d4': "12...d4 hits the c3 knight, but after 13.Ne4 nothing is won and the centre is less mobile."
+          }
+        }
+      ]
+    },
+
+    /* --------------------------------------------- 16. SCHARA-HENNIG */
+    {
+      id: 'black-gambits-16',
+      category: 'black-gambits',
+      side: 'black',
+      title: 'Schara-Hennig: tempo on the queen, fork on c2',
+      level: 'Intermediate',
+      minutes: 7,
+      objective: "Gain tempi against White's queen in the Schara-Hennig Gambit and spot the knight fork on c2 against an uncastled king.",
+      summary: "Black chases the white queen while developing; if White's king stays on e1, ...Nb4-c2+ is a typical blow.",
+      prerequisites: ['tactics-1'],
+      related: { gambits: ['bg-schara-hennig'], openings: ['b-qgd-orthodox'] },
+      steps: [
+        {
+          type: 'line',
+          title: 'Chasing the queen',
+          orientation: 'b',
+          fen: 'start',
+          text: "In the Tarrasch, Black takes on d4 instead of d5 and develops with gain of time.",
+          moves: [
+            { uci: 'd2d4', san: 'd4' },
+            { uci: 'd7d5', san: 'd5' },
+            { uci: 'c2c4', san: 'c4' },
+            { uci: 'e7e6', san: 'e6' },
+            { uci: 'b1c3', san: 'Nc3' },
+            { uci: 'c7c5', san: 'c5' },
+            { uci: 'c4d5', san: 'cxd5' },
+            { uci: 'c5d4', san: 'cxd4', note: "The gambit." },
+            { uci: 'd1a4', san: 'Qa4+' },
+            { uci: 'c8d7', san: 'Bd7' },
+            { uci: 'a4d4', san: 'Qxd4' },
+            { uci: 'e6d5', san: 'exd5' },
+            { uci: 'd4d5', san: 'Qxd5' },
+            { uci: 'b8c6', san: 'Nc6' },
+            { uci: 'g1f3', san: 'Nf3' },
+            { uci: 'g8f6', san: 'Nf6', note: "Another tempo on the queen." },
+            { uci: 'd5d1', san: 'Qd1' },
+            { uci: 'f8c5', san: 'Bc5', note: "Three pieces out, aiming at f2; White's kingside is undeveloped." }
+          ]
+        },
+        {
+          type: 'puzzle',
+          title: 'The fork on c2',
+          orientation: 'b',
+          fen: '3r1rk1/pp2qppp/5n2/2b2b2/1n6/1QN1PN2/PP3PPP/R1B1KB1R b KQ - 0 12',
+          prompt: "Illustrative position: White's king is still on e1. Black to move: win material.",
+          solution: ['b4c2'],
+          hint: "Which knight check also attacks a rook? Is the landing square protected?",
+          explanation: "12...Nc2+! forks the king and the a1 rook, and the f5 bishop protects the knight. If 13.Qxc2 Bxc2, Black has won the queen for a knight; after a king move, ...Nxa1 wins the exchange. Forks like this are why White must hurry to castle in the Schara-Hennig.",
+          wrong: {
+            'b4d3': "12...Nd3+ 13.Bxd3 Bxd3 only trades pieces.",
+            'c5e3': "12...Bxe3? 13.fxe3 simply loses the bishop."
+          }
+        }
+      ]
+    },
+
+    /* --------------------------------------------- 17. PORTUGUESE */
+    {
+      id: 'black-gambits-17',
+      category: 'black-gambits',
+      side: 'black',
+      title: 'Portuguese Gambit: when White declines',
+      level: 'Intermediate',
+      minutes: 6,
+      objective: "Play the Portuguese Gambit's main ideas and regain the pawn safely when White declines with 4.Be2.",
+      summary: "3...Bg4 dares White to play f3; if White develops instead, Black must take back d5 without dropping the bishop.",
+      prerequisites: ['openings-1'],
+      related: { gambits: ['bg-portuguese', 'bg-icelandic'], openings: ['b-scandinavian'] },
+      steps: [
+        {
+          type: 'line',
+          title: 'The gambit accepted',
+          orientation: 'b',
+          fen: 'rn1qkb1r/ppp1pppp/5n2/3P4/3P2b1/8/PPP2PPP/RNBQKBNR w KQkq - 1 4',
+          text: "After 1.e4 d5 2.exd5 Nf6 3.d4 Bg4, White keeps the pawn with 4.f3. Black gives a second pawn with ...e6 to open the e-file against White's king.",
+          moves: [
+            { uci: 'f2f3', san: 'f3', note: "Keeps d5, but loosens e3 and the e1-h4 diagonal." },
+            { uci: 'g4f5', san: 'Bf5' },
+            { uci: 'f1b5', san: 'Bb5+' },
+            { uci: 'b8d7', san: 'Nbd7' },
+            { uci: 'c2c4', san: 'c4' },
+            { uci: 'e7e6', san: 'e6', note: "Open lines are worth more than the pawn." },
+            { uci: 'd5e6', san: 'dxe6' },
+            { uci: 'f5e6', san: 'Bxe6' },
+            { uci: 'd4d5', san: 'd5' },
+            { uci: 'e6f5', san: 'Bf5', note: "...Bb4+ and ...Qe7+ will hit the king on e1." }
+          ]
+        },
+        {
+          type: 'puzzle',
+          title: 'Regain the pawn safely',
+          orientation: 'b',
+          fen: 'rn1qkb1r/ppp1pppp/5n2/3P4/3P2b1/8/PPP1BPPP/RNBQK1NR b KQkq - 2 4',
+          prompt: "White declined with 4.Be2, attacking your bishop. Black to move: make sure you win back the d5 pawn without losing material.",
+          solution: ['g4e2'],
+          hint: "Before taking on d5, deal with the attack on g4.",
+          explanation: "4...Bxe2! removes the attacker. White must recapture (5.Qxe2 or 5.Nxe2), and then 5...Qxd5 or 5...Nxd5 takes back the pawn with a normal Scandinavian. Grabbing first with 4...Qxd5 or 4...Nxd5 leaves the g4 bishop hanging to 5.Bxg4.",
+          wrong: {
+            'd8d5': "4...Qxd5? 5.Bxg4: the bishop was attacked and you have lost it.",
+            'f6d5': "4...Nxd5? 5.Bxg4 wins the bishop for nothing."
+          }
+        }
+      ]
+    },
+
     /* --------------------------------------------- 18. STAFFORD */
     {
       id: 'black-gambits-18',
@@ -2564,7 +2732,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "Check on f2 first: the knight on e4 protects the bishop. Where can the king go?",
           explanation: "7...Bxf2+ 8.Ke2 (the only move: the king cannot take, as e4 guards f2, and d2 is covered by the knight) 8...Bg4 is mate. The king cannot reach e1, e3, f3 or d2, the queen on d1 is in the way, and nothing can block on f3. If White had played 7.dxe4, 7...Bxf2+ 8.Kxf2 Qxd1 wins the queen instead.",
           wrong: {
-            'e4f2': "7...Nxf2? 8.Bxc7 and Black is a queen down for very little.",
+            'e4f2': "7...Nxf2? does not check, and White's king escapes: you are a queen down.",
             'c8g4': "7...Bg4? 8.f3 and the attack is over: you are a queen down.",
             'e8d8': "7...Kxd8 takes the bishop back, but you are still a queen for a bishop down."
           }
