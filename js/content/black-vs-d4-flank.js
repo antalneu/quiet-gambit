@@ -409,9 +409,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'g5e7', san: 'Bxe7' },
             { uci: 'd8e7', san: 'Qxe7' },
             { uci: 'e1g1', san: 'O-O' },
-            { uci: 'd5c3', san: 'Nxc3' },
-            { uci: 'c1c3', san: 'Rxc3' },
-            { uci: 'e6e5', san: 'e5', note: 'The freeing break: the c8-bishop is free at last.' }
+            { uci: 'd5c3', san: 'Nxc3', note: 'After 12.Rxc3 e5 the freeing break comes and the c8-bishop is free at last.' }
           ]
         }
       ],
@@ -574,11 +572,8 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'd1c2', san: 'Qc2' },
             { uci: 'f8e8', san: 'Re8' },
             { uci: 'e1g1', san: 'O-O' },
-            { uci: 'd7f8', san: 'Nf8' },
-            { uci: 'a1b1', san: 'Rab1', note: 'The rook supports b2-b4-b5: the minority attack.' },
-            { uci: 'f8g6', san: 'Ng6' },
-            { uci: 'b2b4', san: 'b4' },
-            { uci: 'a7a6', san: 'a6', note: 'Prepares to meet b5 with ...axb5, so that Black is not left with a weak c6-pawn after bxc6.' }
+            { uci: 'd7f8', san: 'Nf8', note: 'Heading for g6, where the knight guards the kingside.' },
+            { uci: 'a1b1', san: 'Rab1', note: 'The rook supports b2-b4-b5, the minority attack. Black answers with ...Ng6 and ...a6, so that b5 can be met by ...axb5 without leaving a weak c6-pawn.' }
           ]
         },
         {
@@ -1680,7 +1675,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'e3d4', san: 'exd4' },
             { uci: 'g8f6', san: 'Nf6', note: 'White has an isolated d-pawn: Black aims to blockade d5.' },
             { uci: 'g1f3', san: 'Nf3' },
-            { uci: 'f8e7', san: 'Be7' },
+            { uci: 'f8e7', san: 'Be7', note: 'Simple development; ...Nc6 and ...Bg4 will put pressure on d4.' },
             { uci: 'e1g1', san: 'O-O' },
             { uci: 'e8g8', san: 'O-O' }
           ]
@@ -2881,7 +2876,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'b1c3', san: 'Nc3' },
             { uci: 'e7e5', san: 'e5' },
             { uci: 'e2e4', san: 'e4' },
-            { uci: 'e5d4', san: 'exd4' },
+            { uci: 'e5d4', san: 'exd4', note: 'Releases the centre to hit e4.' },
             { uci: 'f3d4', san: 'Nxd4' },
             { uci: 'f8e8', san: 'Re8', note: 'Pressure on e4; ...Nc5 and ...a5 are typical next.' }
           ]
@@ -4367,7 +4362,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'c1b2', san: 'Bb2' },
             { uci: 'e8g8', san: 'O-O' },
             { uci: 'b1d2', san: 'Nbd2' },
-            { uci: 'b7b6', san: 'b6' },
+            { uci: 'b7b6', san: 'b6', note: 'Mirrors the queenside fianchetto.' },
             { uci: 'f3e5', san: 'Ne5' },
             { uci: 'c8b7', san: 'Bb7', note: 'Black can exchange on e5 or play ...Ne7 and ...Ne4.' }
           ]
@@ -5567,9 +5562,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
             { uci: 'a2a3', san: 'a3' },
             { uci: 'h7h6', san: 'h6' },
             { uci: 'b2b4', san: 'b4' },
-            { uci: 'a5b4', san: 'axb4' },
-            { uci: 'a3b4', san: 'axb4' },
-            { uci: 'c8e6', san: 'Be6', note: 'The a-file is open for Black too; ...Qd7 and ...Bh3 or ...f5 can follow.' }
+            { uci: 'a5b4', san: 'axb4', note: 'After 11.axb4 Be6 the a-file is open for Black too, and ...Qd7 with ...Bh3 or ...f5 can follow.' }
           ]
         },
         {
@@ -5594,7 +5587,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           moves: [
             { uci: 'd2d4', san: 'd4' },
             { uci: 'e8g8', san: 'O-O' },
-            { uci: 'g2g3', san: 'g3' },
+            { uci: 'g2g3', san: 'g3', note: "A Fianchetto King's Indian by transposition." },
             { uci: 'd7d6', san: 'd6' },
             { uci: 'f1g2', san: 'Bg2' },
             { uci: 'b8d7', san: 'Nbd7' },
@@ -5887,7 +5880,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           kind: 'Alternative',
           summary: "With d4, e3 and f4 White builds a Stonewall. Black's plan is to trade White's good light-squared bishop, for example with ...b6 and ...Ba6.",
           moves: [
-            { uci: 'd2d4', san: 'd4' },
+            { uci: 'd2d4', san: 'd4', note: 'White builds a Stonewall with d4, e3 and f4.' },
             { uci: 'f8g7', san: 'Bg7' },
             { uci: 'f1d3', san: 'Bd3' },
             { uci: 'e8g8', san: 'O-O' },
