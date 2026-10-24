@@ -234,7 +234,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
 
     {
       id: 'strategy-6',
-      category: 'strategy',
+      category: 'pawn-structures',
       side: 'both',
       title: "Playing with the isolated queen's pawn",
       level: 'Intermediate',
@@ -271,7 +271,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
 
     {
       id: 'strategy-7',
-      category: 'strategy',
+      category: 'pawn-structures',
       side: 'both',
       title: "Playing against the isolated queen's pawn",
       level: 'Intermediate',
@@ -382,7 +382,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
 
     {
       id: 'strategy-10',
-      category: 'strategy',
+      category: 'pawn-structures',
       side: 'both',
       title: 'Hanging pawns',
       level: 'Advanced',

@@ -1,4 +1,4 @@
-/* The Quiet Gambit - skills library: Tactics and Calculation, Attacking Play, Defence and Prophylaxis.
+/* The Quiet Gambit - skills library: Tactics (two calculation lessons), Attacking Play, Defence and Prophylaxis.
  * Data only: appends one part to window.QG_PARTS. Checked by tools/check-content.js. */
 window.QG_PARTS = (window.QG_PARTS || []).concat([{
   source: 'skills-tactics-attack-defence',
@@ -151,7 +151,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
 
     {
       id: 'tactics-8',
-      category: 'tactics',
+      category: 'calculation',
       side: 'both',
       title: 'Checks, captures and threats',
       level: 'Intermediate',
@@ -403,7 +403,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
 
     {
       id: 'tactics-15',
-      category: 'tactics',
+      category: 'calculation',
       side: 'both',
       title: 'Candidate moves and blunder-checks',
       level: 'Advanced',
