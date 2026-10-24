@@ -446,7 +446,7 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           explanation: "...f6 attacks e5. After exf6 Nxf6 Black has the half-open f-file and can aim for ...e5 later. If White lets Black take, ...fxe5 dxe5 breaks the chain and d4 becomes a square for Black's pieces. Either way the chain is under fire from the front as well as the back.",
           wrong: {
             'f7f5': "...f5 gains space but does not touch e5: White's chain stays intact.",
-            'b7b5': "...b5 supports c4, but it is not a break against the chain: White's centre stays untouched."
+            'a7a6': "...a6 prepares ...b5 to support c4, but it is not a break against the chain: White's centre stays untouched."
           }
         }
       ]
@@ -1144,7 +1144,6 @@ window.QG_PARTS = (window.QG_PARTS || []).concat([{
           hint: "Once the g7 bishop is gone, where can your queen go with the rook behind it?",
           explanation: "17.Bxg7! In the game Black took back: 17...Kxg7 18.Qh6+ Kg8 19.Qh8 mate, the queen protected by the rook on the open h-file. Black's best is 17...Nh5, but after 18.Qh6 White still wins material. The bishop trade on g7 is the key move in nearly every Yugoslav attack.",
           wrong: {
-            'h6f8': "Bxf8 wins the exchange, but leaves Black's best defender, the bishop on g7, on the board.",
             'g2g4': "g4 is slow: Black gets time for ...Bxh6 or ...Qa5, and the attack loses its punch."
           }
         }
