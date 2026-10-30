@@ -89,7 +89,14 @@
 :root[data-theme="dark"] .theme-toggle .ico-moon { display: none; }
 @media (max-width: 760px) { .search-icon { order: 1; margin-left: auto; } .theme-toggle { order: 2; } }
 
-/* Arrows that show how a line goes: solid blue = the next move, dashed dark = the reply expected */
-.arrow.arrow-alt { stroke: var(--board-ink); }
-.arrow.arrow-reply { stroke: var(--board-ink); stroke-dasharray: .2 .14; opacity: .6; }
-.arrow-head-reply { fill: var(--board-ink); opacity: .6; }
+
+/* Board arrows: translucent shapes in the board's own colours (same in both themes).
+   Blue = the move to play; soft dark = the reply expected, or a secondary idea. */
+:root { --arrow-main: #2C42DC; --arrow-soft: #1B1F2E; }
+.board-arrows .arrow { opacity: .8; stroke: none; }
+.board-arrows .arrow path { fill: none; stroke: var(--arrow-main); stroke-linecap: round; stroke-linejoin: round; }
+.board-arrows .arrow polygon { fill: var(--arrow-main); stroke: var(--arrow-main); stroke-width: .03; stroke-linejoin: round; }
+.board-arrows .arrow-soft { opacity: .5; }
+.board-arrows .arrow-soft path { stroke: var(--arrow-soft); }
+.board-arrows .arrow-soft polygon { fill: var(--arrow-soft); stroke: var(--arrow-soft); }
+@media (forced-colors: active) { .board-arrows .arrow { forced-color-adjust: none; opacity: 1; } }

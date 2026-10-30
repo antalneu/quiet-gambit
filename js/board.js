@@ -34,7 +34,7 @@
     overlay.setAttribute('class', 'board-arrows');
     overlay.setAttribute('viewBox', '0 0 8 8');
     overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML = '<defs><marker id="' + id + '-head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-head"/></marker><marker id="' + id + '-head-reply" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-head arrow-head-reply"/></marker></defs><g class="arrow-layer"></g>';
+    overlay.innerHTML = '<g class="arrow-layer"></g>';
     var live = el('p', 'sr-only', { 'aria-live': 'polite', id: id + '-live' });
     var ghost = el('span', 'piece piece-ghost', { 'aria-hidden': 'true' });
 
@@ -112,15 +112,36 @@
       return { x: (slot % 8) + 0.5, y: Math.floor(slot / 8) + 0.5 };
     }
 
+    // Arrows are drawn as shapes: a round-tailed shaft and a crisp head that stops short of the
+    // target centre. Knight moves bend into an L. Kind (a[2]): none = the main move; 'reply' or
+    // 'alt' = a slimmer, softer arrow for the answer expected or a secondary idea.
     function drawArrows() {
       var layer = overlay.querySelector('.arrow-layer');
       var out = '';
+      function f(n) { return Math.round(n * 1000) / 1000; }
       arrows.forEach(function (a) {
-        var from = centre(C.parseSq(a[0])), to = centre(C.parseSq(a[1]));
-        var dx = to.x - from.x, dy = to.y - from.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
-        var ex = to.x - dx / len * 0.32, ey = to.y - dy / len * 0.32;
-        out += '<line x1="' + from.x + '" y1="' + from.y + '" x2="' + ex + '" y2="' + ey +
-          '" class="arrow' + (a[2] ? ' arrow-' + a[2] : '') + '" marker-end="url(#' + id + (a[2] === 'reply' ? '-head-reply' : '-head') + ')"/>';
+        var s = C.parseSq(a[0]), t = C.parseSq(a[1]);
+        var from = centre(s), to = centre(t);
+        var soft = a[2] === 'reply' || a[2] === 'alt';
+        var w = soft ? 0.13 : 0.17, hl = soft ? 0.34 : 0.42, hw = soft ? 0.40 : 0.50;
+        var dx = to.x - from.x, dy = to.y - from.y;
+        var knight = (Math.abs(dx) === 1 && Math.abs(dy) === 2) || (Math.abs(dx) === 2 && Math.abs(dy) === 1);
+        // Knight: go along the longer side first, then turn towards the target.
+        var pts = knight ? [from, Math.abs(dx) === 2 ? { x: to.x, y: from.y } : { x: from.x, y: to.y }, to] : [from, to];
+        var p = pts[pts.length - 2], q = pts[pts.length - 1];
+        var ex = q.x - p.x, ey = q.y - p.y, el2 = Math.sqrt(ex * ex + ey * ey) || 1;
+        var ux = ex / el2, uy = ey / el2;
+        var tip = { x: q.x - ux * 0.12, y: q.y - uy * 0.12 };            // stop short of the centre
+        var base = { x: tip.x - ux * hl, y: tip.y - uy * hl };
+        var s0 = pts[0], s1 = pts[1], sx = s1.x - s0.x, sy = s1.y - s0.y, sl = Math.sqrt(sx * sx + sy * sy) || 1;
+        var start = { x: s0.x + sx / sl * 0.22, y: s0.y + sy / sl * 0.22 };  // leave the piece visible
+        var d = 'M' + f(start.x) + ' ' + f(start.y);
+        if (knight) d += ' L' + f(pts[1].x) + ' ' + f(pts[1].y);
+        d += ' L' + f(base.x + ux * 0.02) + ' ' + f(base.y + uy * 0.02);
+        var nx = -uy, ny = ux;
+        var head = f(tip.x) + ',' + f(tip.y) + ' ' + f(base.x + nx * hw / 2) + ',' + f(base.y + ny * hw / 2) + ' ' + f(base.x - nx * hw / 2) + ',' + f(base.y - ny * hw / 2);
+        out += '<g class="arrow' + (soft ? ' arrow-soft' : '') + '">' +
+          '<path d="' + d + '" stroke-width="' + w + '"/><polygon points="' + head + '"/></g>';
       });
       layer.innerHTML = out;
     }
