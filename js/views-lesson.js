@@ -58,17 +58,22 @@
     var prereq = l.prerequisites.map(Q.lesson).filter(Boolean);
     var openPrereq = prereq.filter(function (p) { return !P.isDone(p.id); });
     var rel = l.related || {};
+    // Opening and gambit lessons end with a way to train the line they teach.
+    var trainLine = Q.line((rel.openings || [])[0] || (rel.gambits || [])[0] || '') || null;
 
     main.innerHTML = '<article class="container lesson">' +
       '<header class="lesson-head">' +
         crumbs +
         '<h1 class="h1" tabindex="-1">' + esc(l.title) + '</h1>' +
+        // The goal is what matters before starting; level, time, status and prerequisites sit behind Details.
+        '<p class="objective lede">' + esc(l.objective) + '</p>' +
+        '<details class="about lesson-details"><summary>Details</summary><div class="about-body">' +
         '<div class="head-meta">' + A.side(l.side) + '<span>' + esc(l.level) + '</span><span>' + l.minutes + ' min</span>' +
           '<span id="lesson-state">' + A.stateTag(stateBefore) + '</span></div>' +
-        '<p class="objective"><span class="objective-label">Goal</span>' + esc(l.objective) + '</p>' +
         (prereq.length ? '<p class="prereq small">' + (openPrereq.length ? 'Helpful first: ' : 'Builds on: ') +
           prereq.map(function (p) { return '<a href="' + A.lessonHref(p) + '">' + esc(p.title) + '</a>' + (P.isDone(p.id) ? ' (completed)' : ''); }).join(', ') + '</p>' : '') +
         '<div class="btn-row"><button type="button" class="btn btn-quiet btn-sm" id="review-toggle" aria-pressed="false"></button></div>' +
+        '</div></details>' +
         (resumeAt ? '<p class="small muted resume-note">Picked up at step ' + (resumeAt + 1) + ' of ' + l.steps.length + ', where you left off. <button type="button" class="link-btn" id="restart-lesson">Start from step 1</button></p>' : '') +
       '</header>' +
       '<div class="lesson-grid">' +
@@ -206,6 +211,7 @@
         (nx && nx.done ? '<p class="prose">That was the last lesson in ' + esc(nx.done.title) + '. Well done.</p>' : '') +
         '<div class="btn-row">' +
           (nx && nx.lesson ? '<a class="btn btn-primary" href="' + A.lessonHref(nx.lesson, nx.path && nx.path.id) + '">Next lesson</a>' : '<a class="btn btn-primary" href="#/progress">See your progress</a>') +
+          (trainLine ? '<a class="btn btn-secondary" href="' + A.trainHref(trainLine, 'typical') + '">Train the ' + esc(trainLine.kind === 'gambit' ? trainLine.name : trainLine.short) + '</a>' : '') +
           (path ? '<a class="btn btn-secondary" href="#/paths/' + esc(path.id) + '">Back to the path</a>' : '<a class="btn btn-secondary" href="#/category/' + esc(cat.id) + '">Back to ' + esc(cat.title) + '</a>') +
         '</div>' +
       '</div>';

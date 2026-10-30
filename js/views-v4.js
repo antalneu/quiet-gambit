@@ -65,12 +65,6 @@
   // ------------------------------------------------------------ home
   A.views.home = function () {
     var t = A.libraryTotals(), na = A.nextAction();
-    var doors = [
-      ['#/openings/white', 'White openings', t.families.white + ' openings by your first move', 'white'],
-      ['#/openings/black', 'Black openings', t.families.black + ' openings by White\'s first move', 'black'],
-      ['#/gambits', 'Gambits', Q.gambits.length + ' gambits, labelled for soundness', 'gambit'],
-      ['#/lessons', 'Lessons', Q.lessons.length + ' lessons in ' + Q.categories.length + ' categories', 'lesson']
-    ];
     main.innerHTML = page('page-home',
       '<section class="home-hero"><div class="home-copy">' +
         '<h1 class="display" tabindex="-1">Learn openings one clear line at a time.</h1>' +
@@ -78,9 +72,17 @@
         searchForm('home-q', '', true) +
         '<div class="continue-card"><p class="continue-why">' + esc(na.why) + '</p><a class="btn btn-primary btn-lg" href="' + na.href + '">' + esc(na.label) + '</a></div>' +
       '</div><figure class="home-board" aria-labelledby="home-board-cap"><div id="home-board"></div><figcaption id="home-board-cap"><a href="' + trainHref(Q.line('w-italian-giuoco'), 'typical') + '">The Italian Game after 3.Bc4</a>, the first line most players learn.</figcaption></figure></section>' +
-      '<nav class="doors" aria-label="Browse">' + doors.map(function (d) {
-        return '<a class="door door-' + d[3] + '" href="' + d[0] + '"><span class="door-mark" aria-hidden="true"></span><span class="door-title">' + d[1] + '</span><span class="door-sub">' + esc(d[2]) + '</span></a>';
-      }).join('') + '</nav>');
+      // White and Black as two fields of their own colour, each with the openings most players start with.
+      '<section class="home-sides" aria-label="Choose a side">' + ['white', 'black'].map(function (s) {
+        var fams = Q.families.filter(function (f) { return f.side === s && f.variations.length; })
+          .sort(function (a, b) { return b.variations.length - a.variations.length || a.root.length - b.root.length; }).slice(0, 5);
+        return '<div class="side-field side-field-' + s + '"><h2 class="h2"><a href="#/openings/' + s + '">' + SIDE_OPEN[s] + '</a></h2>' +
+          '<p class="side-field-sub">' + t.families[s] + ' openings, ' + (s === 'white' ? 'by your first move' : 'by what White plays first') + '</p>' +
+          '<ul class="side-field-list">' + fams.map(function (f) {
+            return '<li><a href="#/family/' + encodeURIComponent(f.id) + '"><span>' + esc(f.name) + '</span><span class="notation">' + esc(f.rootMoves) + '</span></a></li>';
+          }).join('') + '</ul><a class="side-field-all" href="#/openings/' + s + '">All ' + t.families[s] + ' ' + (s === 'white' ? 'White' : 'Black') + ' openings</a></div>';
+      }).join('') + '</section>' +
+      '<p class="home-more"><a href="#/gambits">' + Q.gambits.length + ' gambits</a>, each labelled for soundness. <a href="#/lessons">' + Q.lessons.length + ' lessons</a> on tactics, strategy and endgames, in ' + Q.categories.length + ' categories.</p>');
     // The first screen shows the subject itself: a real position from the first line to train.
     var hb = U.boardFrame($('#home-board'), { fen: 'start', label: 'Italian Game after 1.e4 e5 2.Nf3 Nc6 3.Bc4', note: '' });
     var hs = Q.stateAt(['e2e4', 'e7e5', 'g1f3', 'b8c6', 'f1c4']);
@@ -346,7 +348,7 @@
       return '<h2 class="h2">' + esc(isG ? x.name : x.short) + '</h2>' +
         (isG ? '' : '<p class="notation sel-moves">' + esc(x.moves) + '</p>') +
         '<p class="prose sel-sum">' + esc(x.summary) + '</p>' +
-        '<div class="train-row"><a class="btn btn-primary btn-lg" href="' + trainHref(x, which) + '">Train: ' + esc(which === 'typical' ? 'typical move order' : x.lines.filter(function (l) { return l.id === which; })[0].name) + '</a>' +
+        '<div class="train-row"><a class="btn btn-primary btn-lg" href="' + trainHref(x, which) + '" aria-label="Train ' + esc(which === 'typical' ? 'the typical move order' : x.lines.filter(function (l) { return l.id === which; })[0].name) + '">Train this line</a>' +
           '<a class="btn btn-secondary" href="' + trainHref(x, which, 'practice') + '">Practise</a></div>' +
         (status ? '<p class="status-line">' + esc(status) + '</p>' : '') +
         '<h3 class="h4 lines-h">Lines</h3><ul class="line-list">' + ['typical'].concat(x.lines.map(function (l) { return l.id; })).map(function (w) {

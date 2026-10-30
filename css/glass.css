@@ -444,3 +444,44 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 .home-board figcaption { color: var(--ink-2); font-size: 15px; }
 .home-board .position-text { display: none; }
 @media (max-width: 860px) { .home-hero { grid-template-columns: 1fr; } .home-board { justify-self: start; max-width: 380px; } }
+
+/* Taste pass, round 2 */
+/* Home: White and Black as two fields of colour */
+.home-sides { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-7); }
+.side-field { display: grid; gap: var(--s-3); align-content: start; padding: clamp(24px, 3vw, 40px); border-radius: var(--r-lg); }
+.side-field-white { background: var(--surface-2); color: var(--ink); }
+.side-field-black { background: var(--ink); color: #F4F5F9; }
+.side-field .h2 a { color: inherit; text-decoration: none; }
+.side-field .h2 a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.side-field-sub { font-size: 16px; opacity: .85; }
+.side-field-list { list-style: none; display: grid; margin-top: var(--s-2); }
+.side-field-list a { display: flex; justify-content: space-between; gap: var(--s-3); align-items: baseline; min-height: 48px; padding: 10px 0; color: inherit; text-decoration: none; font-weight: 600; font-size: 17px; }
+.side-field-list li + li a { box-shadow: 0 -1px 0 color-mix(in srgb, currentColor 14%, transparent); }
+.side-field-list a:hover span:first-child { text-decoration: underline; text-underline-offset: 3px; }
+.side-field-list .notation { font-weight: 400; opacity: .8; font-size: 17px; }
+.side-field-all { justify-self: start; margin-top: var(--s-2); color: inherit; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+.side-field-black :focus-visible { outline-color: #9EA6FF; }
+.home-more { margin-top: var(--s-5); font-family: var(--font-read); font-size: 19px; color: var(--ink); max-width: 44em; }
+@media (max-width: 760px) { .home-sides { grid-template-columns: 1fr; } }
+
+/* Opening page: the selected variation's lines as compact pills, so the tree comes into view sooner */
+.line-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.line-row { display: inline-flex; width: auto; align-items: baseline; gap: 8px; min-height: 44px; padding: 8px 16px; border-radius: var(--r-pill); background: var(--surface); }
+.line-row:hover { background: #fff; }
+.line-row.is-selected { background: var(--ink); color: #fff; box-shadow: none; }
+.line-row.is-selected .line-kind { color: #D9DBE6; }
+.line-row.is-selected .line-done { color: #fff; }
+.line-kind { font-size: 14px; }
+.selected-card { gap: var(--s-2); }
+.selected-card .train-row { margin: var(--s-2) 0; }
+
+/* Calm entrance: the page settles in once; nothing stays hidden if motion is off */
+@keyframes qg-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.page > *, .page-head-v4 > * { animation: qg-rise 420ms var(--ease) both; }
+.page > :nth-child(2) { animation-delay: 60ms; } .page > :nth-child(3) { animation-delay: 120ms; } .page > :nth-child(4) { animation-delay: 180ms; } .page > :nth-child(n+5) { animation-delay: 240ms; }
+.page-train > *, .page-train .tr-head > * { animation: none; }
+.home-board { animation: qg-rise 560ms var(--ease) 120ms both; }
+@media (prefers-reduced-motion: reduce) { .page > *, .page-head-v4 > *, .home-board { animation: none !important; } }
+.lesson-head .objective.lede { font-size: clamp(19px, 1.7vw, 22px); color: var(--ink); max-width: 36em; }
+.lesson-details { max-width: 640px; }
+.lesson-head { gap: var(--s-3); }
