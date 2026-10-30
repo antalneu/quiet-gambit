@@ -423,3 +423,24 @@ body:has(.page-train) .tabbar { display: none; }
   .nav-dot { forced-color-adjust: none; background: Highlight; }
   .soundness { border: 1px solid CanvasText; }
 }
+
+/* Taste pass: house rules inside the paper sheet (glass chrome stays, as the brief asks) */
+.btn-primary, .btn-accent { background: var(--accent); box-shadow: none; }
+.btn-primary:hover, .btn-accent:hover { background: var(--accent-ink); box-shadow: none; }
+.board-frame { background: var(--surface-2); box-shadow: none; }
+.selected-card, .tr-card, .door, .empty, .continue-card { box-shadow: none; }
+.door { background: var(--surface-2); }
+.door:hover { background: var(--surface-3); box-shadow: none; transform: none; }
+.continue-card { background: var(--accent-wash); }
+h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
+.row-main { align-items: flex-start; }
+.row-main > .side-dot { margin-top: 6px; }
+.row-meta { padding-top: 2px; }
+.results-count { margin-bottom: var(--s-3); }
+/* Home: the subject on the first screen */
+.home-hero { grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); align-items: center; gap: var(--s-6); justify-items: stretch; }
+.home-copy { display: grid; gap: var(--s-5); justify-items: start; }
+.home-board { margin: 0; display: grid; gap: var(--s-2); max-width: 460px; width: 100%; justify-self: end; }
+.home-board figcaption { color: var(--ink-2); font-size: 15px; }
+.home-board .position-text { display: none; }
+@media (max-width: 860px) { .home-hero { grid-template-columns: 1fr; } .home-board { justify-self: start; max-width: 380px; } }

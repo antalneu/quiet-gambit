@@ -72,15 +72,19 @@
       ['#/lessons', 'Lessons', Q.lessons.length + ' lessons in ' + Q.categories.length + ' categories', 'lesson']
     ];
     main.innerHTML = page('page-home',
-      '<section class="home-hero">' +
+      '<section class="home-hero"><div class="home-copy">' +
         '<h1 class="display" tabindex="-1">Learn openings one clear line at a time.</h1>' +
         '<p class="lede">Play each line from the first move as your side. The board answers, and key moves come with a short reason.</p>' +
         searchForm('home-q', '', true) +
         '<div class="continue-card"><p class="continue-why">' + esc(na.why) + '</p><a class="btn btn-primary btn-lg" href="' + na.href + '">' + esc(na.label) + '</a></div>' +
-      '</section>' +
+      '</div><figure class="home-board" aria-labelledby="home-board-cap"><div id="home-board"></div><figcaption id="home-board-cap"><a href="' + trainHref(Q.line('w-italian-giuoco'), 'typical') + '">The Italian Game after 3.Bc4</a>, the first line most players learn.</figcaption></figure></section>' +
       '<nav class="doors" aria-label="Browse">' + doors.map(function (d) {
         return '<a class="door door-' + d[3] + '" href="' + d[0] + '"><span class="door-mark" aria-hidden="true"></span><span class="door-title">' + d[1] + '</span><span class="door-sub">' + esc(d[2]) + '</span></a>';
       }).join('') + '</nav>');
+    // The first screen shows the subject itself: a real position from the first line to train.
+    var hb = U.boardFrame($('#home-board'), { fen: 'start', label: 'Italian Game after 1.e4 e5 2.Nf3 Nc6 3.Bc4', note: '' });
+    var hs = Q.stateAt(['e2e4', 'e7e5', 'g1f3', 'b8c6', 'f1c4']);
+    if (hs) hb.board.setPosition(hs, { lastMove: 'f1c4', arrows: [['c4', 'f7']] });
     return { title: SITE + ': learn chess openings one line at a time' };
   };
 
@@ -339,8 +343,7 @@
     function selectedHTML(x) {
       var keys = entryKeys(x);
       var status = T.statusLine(x.id + '/' + which);
-      return '<p class="eyebrow">' + (isG ? 'Gambit' : 'Variation') + '</p>' +
-        '<h2 class="h2">' + esc(isG ? x.name : x.short) + '</h2>' +
+      return '<h2 class="h2">' + esc(isG ? x.name : x.short) + '</h2>' +
         (isG ? '' : '<p class="notation sel-moves">' + esc(x.moves) + '</p>') +
         '<p class="prose sel-sum">' + esc(x.summary) + '</p>' +
         '<div class="train-row"><a class="btn btn-primary btn-lg" href="' + trainHref(x, which) + '">Train: ' + esc(which === 'typical' ? 'typical move order' : x.lines.filter(function (l) { return l.id === which; })[0].name) + '</a>' +
