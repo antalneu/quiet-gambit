@@ -143,27 +143,6 @@
   function setMenu() {}
   $('.skip-link').addEventListener('click', function (e) { e.preventDefault(); main.focus(); main.scrollIntoView(); });
 
-  // Theme: dark by default (set in <head> before paint); the header button switches and remembers.
-  var THEME_KEY = 'qg-theme';
-  function applyTheme(t) {
-    var root = document.documentElement;
-    root.dataset.theme = t;
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', t === 'dark' ? '#0D0F17' : '#E7EBF4');
-    $$('[data-theme-toggle]').forEach(function (b) {
-      b.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-      b.title = t === 'dark' ? 'Light mode' : 'Dark mode';
-    });
-  }
-  applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('[data-theme-toggle]');
-    if (!b) return;
-    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    try { localStorage.setItem(THEME_KEY, next); } catch (err) { /* storage unavailable: lasts this visit */ }
-    A.status(next === 'dark' ? 'Dark mode on.' : 'Light mode on.');
-  });
 
   // ------------------------------------------------------------ query helpers
   function safeDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }

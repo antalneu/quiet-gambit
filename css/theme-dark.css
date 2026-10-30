@@ -87,4 +87,4 @@
 .theme-toggle .ico-sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .ico-sun { display: block; }
 :root[data-theme="dark"] .theme-toggle .ico-moon { display: none; }
-@media (max-width: 760px) { .search-icon { margin-left: auto; } .theme-toggle { margin-left: 0; } }
+@media (max-width: 760px) { .search-icon { order: 1; margin-left: auto; } .theme-toggle { order: 2; } }
