@@ -201,6 +201,7 @@
                   x.fam.variations.filter(function (y) { return y !== x; }).map(function (y) { return '<li><a href="#/train/' + encodeURIComponent(y.id) + '">' + esc(y.short) + '</a> <span class="notation muted">' + esc(Q.moveText(y.branch.sans, y.branch.base.length)) + '</span></li>'; }).join('') + '</ul></details>' : '') +
               '</section>' +
               '<details class="tr-block tr-more"><summary>More about the ' + esc(title) + '</summary><div class="tr-more-body">' +
+                '<label class="tr-check"><input type="checkbox" id="tr-shortcuts"' + (store.prefs.shortcuts === false ? '' : ' checked') + '> Single-key shortcuts: H hint, R retry, [ and ] review, L live position</label>' +
                 '<p class="prose">' + esc(x.idea) + '</p>' +
                 (x.plans ? ['white', 'black'].map(function (s) { return '<h3 class="h4">' + (s === 'white' ? 'White' : 'Black') + '\'s plans</h3><ul class="plan-list">' + (x.plans[s] || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>'; }).join('') : '') +
                 (x.pitfalls.length ? '<h3 class="h4">Traps and risks</h3><ul class="plain-list tr-pitfalls">' + x.pitfalls.map(function (p) { return '<li><strong>' + esc(p.kind) + ' for ' + (p.side === 'white' ? 'White' : 'Black') + ':</strong> ' + esc(p.title) + '. ' + esc(p.text) + '</li>'; }).join('') + '</ul>' : '') +
@@ -245,7 +246,12 @@
         render();
         var t = ++run.token;
         var delay = reduce ? 0 : (run.ply === 0 ? 450 : (seq.imp[run.ply - 1] ? 1100 : 650));
-        run.timer = window.setTimeout(function () { if (t === run.token) oppMove(prefixMsg); }, delay);
+        run.timer = window.setTimeout(function () {
+          if (t !== run.token) return;
+          // Looking back at an earlier move: the reply waits until the learner returns to the live position.
+          if (run.cursor !== run.ply) { run.pendingOpp = prefixMsg || ''; return; }
+          oppMove(prefixMsg);
+        }, delay);
       }
     }
     function oppMove(prefixMsg) {
@@ -254,7 +260,7 @@
       run.ply++; run.cursor = run.ply;
       var note = seq.imp[i];
       var msg = (prefixMsg || '') + them + ' plays ' + seq.san[i] + '.' + (note && mode === 'guided' ? ' Note: ' + note : '');
-      if (run.ply >= seq.uci.length) { say(msg); return end(); }
+      if (run.ply >= seq.uci.length) return end(msg + ' ');
       next(msg + ' ');
     }
     frame.onMove = function (e) {
@@ -277,8 +283,9 @@
       store.last = { key: seq.key, ply: run.ply, at: Date.now(), mode: mode }; persist();
       var note = seq.imp[i];
       var pre = assisted ? 'Move shown: ' + seq.san[i] + '. ' : 'Correct. ';
-      if (run.ply >= seq.uci.length) { render(); say(pre + (note || '')); return window.setTimeout(end, reduce ? 0 : 800); }
+      if (run.ply >= seq.uci.length) { render(); var t = ++run.token; run.timer = window.setTimeout(function () { if (t === run.token) end(pre + (note ? note + ' ' : '')); }, reduce ? 0 : 900); return; }
       next(pre + (note ? note + ' ' : ''));
+      if (assisted) board.focus();
     }
     function wrongMove(e) {
       var i = run.ply;
@@ -316,8 +323,9 @@
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
       A.replaceHash(hrefFor(seq.which, mode));
       next('Restarted. ');
+      board.focus();
     }
-    function end() {
+    function end(prefix) {
       run.state = 'end'; run.done = true;
       board.setInteractive(false);
       var learnerPlies = seq.uci.filter(function (u, i) { return isLearnerPly(seq, i) && i >= run.shared; }).length || 1;
@@ -328,7 +336,8 @@
       run.record = finish(seq, mode, clean, learnerPlies, missed);
       render();
       var h = $('#tr-end-h'); if (h) h.focus();
-      say(mode === 'practice' ? 'Line complete. Score ' + clean + ' out of ' + learnerPlies + '.' + (missed.length ? ' Review move' + (missed.length > 1 ? 's ' : ' ') + missed.map(function (i) { return Math.floor(i / 2) + 1; }).join(' and ') + '.' : '') : 'Line complete. ' + helped + (helped === 1 ? ' move' : ' moves') + ' needed help.');
+      // One message: the final move (and its note) first, then the result.
+      say((prefix || '') + (mode === 'practice' ? 'Line complete. Score ' + clean + ' out of ' + learnerPlies + '.' + (missed.length ? ' Review move' + (missed.length > 1 ? 's ' : ' ') + missed.map(function (i) { return Math.floor(i / 2) + 1; }).join(' and ') + '.' : '') : 'Line complete. ' + helped + (helped === 1 ? ' move' : ' moves') + ' needed help.'));
     }
 
     // ---- review (look back without disturbing the run)
@@ -339,6 +348,7 @@
         board.setPosition(seq.states[k], { lastMove: seq.uci[k - 1] || null });
         if (run.state === 'turn') board.setInteractive(true);
         render();
+        if (run.pendingOpp != null) { var pm = run.pendingOpp; run.pendingOpp = null; say('Back at the live position.'); oppMove(pm); return; }
         say('Back at the live position. ' + (run.state === 'turn' ? 'Your move.' : ''));
         return;
       }
@@ -356,7 +366,22 @@
       var i = list.indexOf(x);
       return i >= 0 && i < list.length - 1 ? list[i + 1] : null;
     }
+    // Re-rendering replaces buttons; put focus back on the same control (or the first action) so keyboard users keep their place.
     function render() {
+      var a = document.activeElement, key = null, rootEl = $('.page-train');
+      if (a && rootEl && rootEl.contains(a) && !a.closest('.board') && a.dataset) {
+        ['act', 'ply', 'rev', 'switch'].some(function (k) { if (a.dataset[k] != null) { key = '[data-' + k + '="' + a.dataset[k] + '"]'; return true; } return false; });
+        if (!key && (a.closest('#tr-actions') || a.closest('#tr-card'))) key = '#tr-actions .btn';
+      }
+      renderInner();
+      if (key) { var el = rootEl.querySelector(key) || rootEl.querySelector('#tr-actions .btn'); if (el) el.focus(); }
+    }
+    function recentNotes(last) {
+      return [last - 1, last].filter(function (k) { return k >= 0 && seq.imp[k]; }).map(function (k) {
+        return '<p class="tr-note"><span class="tr-note-move notation">' + esc(moveLabel(seq, k)) + '</span> ' + esc(seq.imp[k]) + '</p>';
+      }).join('');
+    }
+    function renderInner() {
       var n = seq.uci.length, reviewing = run.cursor < run.ply;
       // progress
       $('#tr-count').textContent = run.state === 'end' ? 'Line complete: ' + n + ' moves' :
@@ -373,10 +398,11 @@
         var mark = run.missed[i] ? ' (missed)' : run.assisted[i] ? ' (with help)' : '';
         return '<li>' + num + '<button type="button" data-ply="' + (i + 1) + '" class="' + (isLearnerPly(seq, i) ? 'is-you' : '') + (run.missed[i] ? ' is-missed' : '') + '"' + (i + 1 === run.cursor ? ' aria-current="step"' : '') + ' aria-label="Move ' + (Math.floor(i / 2) + 1) + (i % 2 ? ', Black ' : ', White ') + esc(s) + mark + '">' + esc(s) + '</button></li>';
       }).join('') + (run.ply < n ? '<li class="tr-togo">' + (n - run.ply) + ' to go</li>' : '');
-      $('[data-rev="prev"]').disabled = run.cursor === 0;
-      $('[data-rev="first"]').disabled = run.cursor === 0;
-      $('[data-rev="next"]').disabled = !reviewing;
-      $('[data-rev="live"]').disabled = !reviewing;
+      // aria-disabled, not disabled: a focused button that becomes unavailable keeps focus.
+      $('.tr-transport [data-rev="prev"]').setAttribute('aria-disabled', run.cursor === 0 ? 'true' : 'false');
+      $('.tr-transport [data-rev="first"]').setAttribute('aria-disabled', run.cursor === 0 ? 'true' : 'false');
+      $('.tr-transport [data-rev="next"]').setAttribute('aria-disabled', reviewing ? 'false' : 'true');
+      $('.tr-transport [data-rev="live"]').setAttribute('aria-disabled', reviewing ? 'false' : 'true');
 
       // card + actions
       var card = $('#tr-card'), acts = $('#tr-actions');
@@ -388,6 +414,7 @@
           r.missed.length ? '<button type="button" class="btn btn-primary" data-act="again">Practise it again</button>' :
           nl ? '<a class="btn btn-primary" href="' + hrefFor(nl, mode) + '">Next line</a>' : '<button type="button" class="btn btn-primary" data-act="again">Practise it again</button>';
         card.innerHTML = '<h2 class="h3" id="tr-end-h" tabindex="-1">Line complete</h2>' +
+          recentNotes(seq.uci.length - 1) +
           (mode === 'practice' ? '<p class="tr-score"><span class="tr-score-num">' + r.clean + '/' + r.of + '</span> moves recalled without help' + (r.missed.length ? '' : '. Well done.') + '</p>' +
             (r.missed.length ? '<p>Look again at: ' + r.missed.map(function (i) { return '<button type="button" class="link-btn" data-ply="' + (i + 1) + '">' + esc(moveLabel(seq, i)) + '</button>'; }).join(', ') + '</p>' : '')
             : '<p class="prose">' + (r.helped ? r.helped + (r.helped === 1 ? ' move' : ' moves') + ' needed a hint. ' : 'You found every move. ') + 'Now try it from memory in practice mode.</p>') +
@@ -420,7 +447,7 @@
         ? (mode === 'practice' ? 'Recall ' + you + '\'s move ' + (Math.floor(run.ply / 2) + 1) + '.' : 'Find ' + you + '\'s move ' + (Math.floor(run.ply / 2) + 1) + '.')
         : them + ' is replying…';
       card.innerHTML = '<h2 class="sr-only" id="tr-card-h">Current move</h2>' +
-        (last >= 0 ? '<p class="tr-move notation">' + esc(moveLabel(seq, last)) + '</p>' + (lastNote ? '<p class="tr-note">' + esc(lastNote) + '</p>' : '') : '<p class="tr-note">' + esc(seq.entry.summary) + '</p>') +
+        (last >= 0 ? '<p class="tr-move notation">' + esc(moveLabel(seq, last)) + '</p>' + recentNotes(last) : '<p class="tr-note">' + esc(seq.entry.summary) + '</p>') +
         '<p class="tr-prompt">' + esc(prompt) + '</p>' +
         (run.hint ? '<p class="fb fb-hint">' + U.ICON.hint + '<span>' + (run.hint === 1 ? 'The highlighted piece moves.' : 'Follow the arrow.') + '</span></p>' : '');
       acts.innerHTML = run.state === 'turn'
@@ -443,7 +470,7 @@
       if (b.dataset.act === 'practice') { restart('practice'); return; }
       if (b.dataset.switch != null && run.notice) { var k = run.notice.cls.cands[+b.dataset.switch]; location.hash = '#/train/' + encodeURIComponent(k.entry.id) + '/' + encodeURIComponent(k.which) + (mode !== 'guided' ? '?mode=' + mode : ''); return; }
       if (b.dataset.line) { switchLine(b.dataset.line); return; }
-      if (b.dataset.ply) { review(+b.dataset.ply); return; }
+      if (b.dataset.ply) { review(+b.dataset.ply); if (drawerEl.dataset.open === 'true') drawer(false); return; }
       if (b.dataset.rev) {
         var r = b.dataset.rev;
         review(r === 'first' ? 0 : r === 'prev' ? run.cursor - 1 : r === 'next' ? run.cursor + 1 : run.ply);
@@ -469,6 +496,7 @@
     var drawerEl = $('#tr-drawer'), drawerBtn = $('.tr-drawer-btn');
     function drawer(open) {
       drawerEl.dataset.open = open ? 'true' : 'false';
+      if (open) { drawerEl.setAttribute('role', 'dialog'); drawerEl.setAttribute('aria-label', 'Moves and lines'); } else { drawerEl.removeAttribute('role'); drawerEl.removeAttribute('aria-label'); }
       drawerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       if (open) $('.tr-drawer-head h2').focus(); else if (document.activeElement && drawerEl.contains(document.activeElement)) drawerBtn.focus();
     }
@@ -479,7 +507,8 @@
       var k = e.key;
       if (k === 'Escape') { if (drawerEl.dataset.open === 'true') { drawer(false); e.preventDefault(); } else if (run.cursor < run.ply) { review(run.ply); e.preventDefault(); } return; }
       if (onBoard && /^Arrow|Home|End/.test(k)) return;
-      if (k === 'h' || k === 'H') { if (run.state === 'turn' && !run.notice) hint(); e.preventDefault(); }
+      if (store.prefs.shortcuts === false && /^[hHrRlL[]]$/.test(k)) return;
+      if (k === 'h' || k === 'H') { if (mode === 'guided' && run.state === 'turn' && !run.notice) hint(); e.preventDefault(); }
       else if (k === 'r' || k === 'R') { if (run.notice) retry(); else if (run.state === 'end') restart(); e.preventDefault(); }
       else if (k === '[') { review(run.cursor - 1); e.preventDefault(); }
       else if (k === ']') { review(run.cursor + 1); e.preventDefault(); }
@@ -487,6 +516,7 @@
       else if ((k === 'ArrowLeft' || k === 'ArrowRight') && e.target.closest('#tr-moves, .tr-transport')) { review(run.cursor + (k === 'ArrowLeft' ? -1 : 1)); e.preventDefault(); }
     }
     root.addEventListener('click', onClick);
+    root.addEventListener('change', function (e) { if (e.target.id === 'tr-shortcuts') { store.prefs.shortcuts = e.target.checked; persist(); } });
     document.addEventListener('keydown', onKey);
     A.teardown.push(function () { cancel(); document.removeEventListener('keydown', onKey); frame.onMove = null; });
 

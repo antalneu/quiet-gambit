@@ -147,6 +147,7 @@
       groups.push({ key: 'lesson', title: 'Lessons', items: lessons });
       var total = groups.reduce(function (a, g) { return a + g.items.length; }, 0);
       $('#s-count').textContent = total ? plural(total, 'result') : '';
+      if (A.announceSoon) A.announceSoon(total ? plural(total, 'result') : 'No results');
       if (!total) {
         $('#s-results').innerHTML = '<div class="empty"><p class="h4">Nothing matches' + (f.q ? ' “' + esc(f.q) + '”' : '') + '.</p>' +
           '<p>Try another name (Spanish for Ruy Lopez), an ECO code, or moves like <span class="notation">1.e4 c5</span>.' + (f.side || f.first || f.cat || f.level ? ' Or loosen the filters.' : '') + '</p>' +
@@ -186,7 +187,7 @@
     $('.filter-row').addEventListener('change', apply);
     $('#s-results').addEventListener('click', function (e) {
       var m = e.target.closest('[data-more]');
-      if (m) { open[m.dataset.more] = true; apply(); return; }
+      if (m) { var g = m.dataset.more; open[g] = true; apply(); var rows = $$('#rg-' + g + ' ~ .rows a.row-main'); if (rows[5]) rows[5].focus(); return; }
       if (e.target.closest('[data-clear]')) { $('#s-q').value = ''; $$('.filter-row select').forEach(function (s) { s.value = ''; }); apply(); $('#s-q').focus(); }
     });
     apply();
@@ -303,7 +304,7 @@
               '<span class="branch-move notation">' + moverDot(it.start) + esc(it.label) + '</span><span class="tree-name">' + esc(x.short) + '</span>' +
               '<span class="tree-meta">' + esc(x.difficulty) + dueChip(entryKeys(x)) + '</span></button>' + (i === k.entries.length - 1 ? sub : '') + '</li>';
           }).join('');
-          return '<li><button type="button" class="tree-row tree-fork" data-path="' + esc(k.path.join(' ')) + '"><span class="branch-move notation">' + moverDot(it.start) + esc(it.label) + '</span><span class="tree-name muted">' + k.order.length + ' ways on</span></button><ul>' + kids(k) + '</ul></li>';
+          return '<li><button type="button" class="tree-row tree-fork" data-path="' + esc(k.path.join(' ')) + '"><span class="branch-move notation">' + moverDot(it.start) + esc(it.label) + '</span><span class="tree-name muted"><span class="sr-only">Branch point, </span>' + k.order.length + ' ways on</span></button><ul>' + kids(k) + '</ul></li>';
         }).join('');
       }
       var rootRows = t.entries.map(function (x) {
@@ -317,7 +318,7 @@
       '<div class="study-grid">' +
         '<div class="study-stage"><div id="st-board"></div><div id="st-stepper"></div></div>' +
         '<div class="study-side">' +
-          '<section class="selected-card" id="st-selected" aria-live="polite"></section>' +
+          '<section class="selected-card" id="st-selected"></section>' +
           (isG ? '' : '<details class="tree-panel" open><summary><span class="h4">Variations</span> <span class="count">' + f.variations.length + '</span></summary>' + treeHTML() + '</details>') +
           '<details class="about"><summary>About ' + (isG ? 'this gambit' : 'this opening') + '</summary><div class="about-body" id="st-about"></div></details>' +
         '</div>' +
