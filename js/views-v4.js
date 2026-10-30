@@ -340,7 +340,7 @@
     function showLine(x, w, at) {
       var host = $('#st-stepper');
       host.innerHTML = '';
-      stepper = U.lineStepper(host, frame, lineMoves(x, w), { startAt: at != null ? at : x.defining.length, startNote: 'Starting position.' });
+      stepper = U.lineStepper(host, frame, lineMoves(x, w), { startAt: at != null ? at : x.defining.length, startNote: 'Starting position.', nextArrow: true });
     }
     function selectedHTML(x) {
       var keys = entryKeys(x);

@@ -125,7 +125,10 @@
 
     function show() {
       var lm = idx > 0 ? uci[idx - 1] : null;
-      frame.board.setPosition(states[idx], { lastMove: lm, arrows: idx === 0 && opts.startArrows ? opts.startArrows : [] });
+      // nextArrow: point at the move the line plays next, so stepping shows where the line goes.
+      var arr = idx === 0 && opts.startArrows ? opts.startArrows : [];
+      if (opts.nextArrow && idx < uci.length) arr = [[uci[idx].slice(0, 2), uci[idx].slice(2, 4)]];
+      frame.board.setPosition(states[idx], { lastMove: lm, arrows: arr });
       $$('.movelist button', el).forEach(function (b) {
         if (+b.dataset.ply === idx) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
       });

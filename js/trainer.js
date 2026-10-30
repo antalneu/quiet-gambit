@@ -231,17 +231,27 @@
     function cancel() { if (run) { run.token++; window.clearTimeout(run.timer); } }
     function learnerToMove() { return run.ply < seq.uci.length && isLearnerPly(seq, run.ply); }
 
+    // Guided mode draws the line ahead: a solid arrow for your next move and a dashed one for the reply the line expects.
+    function arrowsOn() { return mode === 'guided' && store.prefs.arrows !== false; }
+    function lineArrows() {
+      if (!arrowsOn() || run.state !== 'turn' || run.cursor !== run.ply || run.notice) { board.setArrows([]); return; }
+      var u = seq.uci[run.ply], r = seq.uci[run.ply + 1], a = [[u.slice(0, 2), u.slice(2, 4)]];
+      if (r) a.push([r.slice(0, 2), r.slice(2, 4), 'reply']);
+      board.setArrows(a);
+    }
     // ---- flow
     function next(prefixMsg) {
       if (run.ply >= seq.uci.length) return end();
       if (learnerToMove()) {
         run.state = 'turn'; run.hint = 0;
-        board.setArrows([]); board.setHighlights([]);
+        board.setHighlights([]);
         board.setInteractive(true);
         render();
+        lineArrows();
         say((prefixMsg || '') + 'Your move.');
       } else {
         run.state = 'opp';
+        board.setArrows([]);
         board.setInteractive(false);
         render();
         var t = ++run.token;
@@ -314,6 +324,7 @@
       run.notice = null;
       board.setPosition(seq.states[run.ply], { lastMove: seq.uci[run.ply - 1] || null });
       render();
+      lineArrows();
       board.focus();
       say('Try again. Your move.');
     }
@@ -348,12 +359,14 @@
         board.setPosition(seq.states[k], { lastMove: seq.uci[k - 1] || null });
         if (run.state === 'turn') board.setInteractive(true);
         render();
+        lineArrows();
         if (run.pendingOpp != null) { var pm = run.pendingOpp; run.pendingOpp = null; say('Back at the live position.'); oppMove(pm); return; }
         say('Back at the live position. ' + (run.state === 'turn' ? 'Your move.' : ''));
         return;
       }
       board.setInteractive(false);
-      board.setPosition(seq.states[k], { lastMove: seq.uci[k - 1] || null });
+      var nx = seq.uci[k];
+      board.setPosition(seq.states[k], { lastMove: seq.uci[k - 1] || null, arrows: nx && (mode === 'guided' || run.state === 'end') ? [[nx.slice(0, 2), nx.slice(2, 4)]] : [] });
       render();
       say(k ? 'Move ' + k + ' of ' + seq.uci.length + '. ' + moveLabel(seq, k - 1) + (seq.imp[k - 1] && mode === 'guided' ? '. ' + seq.imp[k - 1] : '') : 'Starting position.');
     }
@@ -451,7 +464,8 @@
         '<p class="tr-prompt">' + esc(prompt) + '</p>' +
         (run.hint ? '<p class="fb fb-hint">' + U.ICON.hint + '<span>' + (run.hint === 1 ? 'The highlighted piece moves.' : 'Follow the arrow.') + '</span></p>' : '');
       acts.innerHTML = run.state === 'turn'
-        ? (mode === 'guided' ? '<button type="button" class="btn btn-secondary" data-act="hint">' + U.ICON.hint + (run.hint === 0 ? 'Hint' : run.hint === 1 ? 'Show the target' : 'Show the move') + '</button>' :
+        ? (mode === 'guided' ? '<button type="button" class="btn btn-quiet" data-act="arrows" aria-pressed="' + arrowsOn() + '">' + (arrowsOn() ? U.ICON.check : '') + 'Arrows</button>' : '') +
+          (mode === 'guided' ? '<button type="button" class="btn btn-secondary" data-act="hint">' + U.ICON.hint + (run.hint === 0 ? 'Hint' : run.hint === 1 ? 'Show the target' : 'Show the move') + '</button>' :
             '<button type="button" class="btn btn-secondary" data-act="hint">Show the move</button>') +
           '<button type="button" class="btn btn-quiet" data-act="restart">' + U.ICON.reset + 'Restart</button>'
         : '<button type="button" class="btn btn-quiet" data-act="restart">' + U.ICON.reset + 'Restart</button>';
@@ -464,6 +478,7 @@
       if (!b || !root.contains(b)) return;
       if (b.dataset.mode) { if (b.dataset.mode !== mode) restart(b.dataset.mode); return; }
       if (b.dataset.act === 'show') { if (run.state === 'turn') accept(true); return; }
+      if (b.dataset.act === 'arrows') { store.prefs.arrows = !arrowsOn(); persist(); render(); lineArrows(); A.status(arrowsOn() ? 'Arrows on: the next move and the expected reply are drawn.' : 'Arrows off.'); return; }
       if (b.dataset.act === 'hint') { hint(); return; }
       if (b.dataset.act === 'retry') { retry(); return; }
       if (b.dataset.act === 'restart' || b.dataset.act === 'again') { restart(); return; }

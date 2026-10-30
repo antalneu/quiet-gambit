@@ -34,7 +34,7 @@
     overlay.setAttribute('class', 'board-arrows');
     overlay.setAttribute('viewBox', '0 0 8 8');
     overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML = '<defs><marker id="' + id + '-head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-head"/></marker></defs><g class="arrow-layer"></g>';
+    overlay.innerHTML = '<defs><marker id="' + id + '-head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-head"/></marker><marker id="' + id + '-head-reply" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-head arrow-head-reply"/></marker></defs><g class="arrow-layer"></g>';
     var live = el('p', 'sr-only', { 'aria-live': 'polite', id: id + '-live' });
     var ghost = el('span', 'piece piece-ghost', { 'aria-hidden': 'true' });
 
@@ -120,7 +120,7 @@
         var dx = to.x - from.x, dy = to.y - from.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
         var ex = to.x - dx / len * 0.32, ey = to.y - dy / len * 0.32;
         out += '<line x1="' + from.x + '" y1="' + from.y + '" x2="' + ex + '" y2="' + ey +
-          '" class="arrow' + (a[2] ? ' arrow-' + a[2] : '') + '" marker-end="url(#' + id + '-head)"/>';
+          '" class="arrow' + (a[2] ? ' arrow-' + a[2] : '') + '" marker-end="url(#' + id + (a[2] === 'reply' ? '-head-reply' : '-head') + ')"/>';
       });
       layer.innerHTML = out;
     }
