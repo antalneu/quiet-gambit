@@ -459,6 +459,7 @@
     paths: paths, path: function (id) { return pathById[id]; },
     tree: tree, node: treeNode, samePosition: samePosition, locate: locate,
     index: index, search: search, firstMove: firstMove,
-    sanPath: sanPath, moveText: moveText, stateAt: stateAt, startsWith: startsWith
+    sanPath: sanPath, moveText: moveText, stateAt: stateAt, startsWith: startsWith,
+    posKey: posKey, nodesAt: function (key) { tree('white'); return byPos[key] || []; }
   };
 })();

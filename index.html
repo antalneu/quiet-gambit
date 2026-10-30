@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Quiet Gambit</title>
   <meta name="description" content="A chess studio with a searchable opening library for White and Black, an opening explorer, honest gambit guides, guided paths and over a hundred short interactive lessons.">
-  <meta name="theme-color" content="#F2ECDF">
+  <meta name="theme-color" content="#E7EBF4">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='10' height='10' fill='%231A1D2B'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%232F3BD6'/%3E%3Crect x='10.5' y='.5' width='9' height='9' fill='none' stroke='%231A1D2B'/%3E%3Crect x='.5' y='10.5' width='9' height='9' fill='none' stroke='%231A1D2B'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,32 +14,39 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/library.css">
   <link rel="stylesheet" href="css/catalogue.css">
+  <link rel="stylesheet" href="css/glass.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
-
   <header class="site-header">
-    <div class="container header-inner">
+    <div class="nav-bar">
       <a class="wordmark" href="#/" aria-label="The Quiet Gambit, home">
         <span class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-        The Quiet Gambit
+        <span class="wordmark-text">The Quiet Gambit</span>
       </a>
-      <button class="btn btn-secondary btn-sm menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-      <nav class="nav" id="site-nav" aria-label="Main">
+      <nav class="nav" aria-label="Main">
         <ul>
-          <li><a href="#/library" data-route="library">Library</a></li>
           <li><a href="#/openings" data-route="openings">Openings</a></li>
           <li><a href="#/gambits" data-route="gambits">Gambits</a></li>
-          <li><a href="#/explorer" data-route="explorer">Explorer</a></li>
           <li><a href="#/lessons" data-route="lessons">Lessons</a></li>
-          <li><a href="#/paths" data-route="paths">Paths</a></li>
-          <li><a href="#/coach" data-route="coach">Coach</a></li>
-          <li><a class="nav-progress" href="#/progress" data-route="progress" data-progress-text></a></li>
+          <li><a href="#/study" data-route="study" data-study-label>My study<span class="nav-dot" data-due-dot hidden></span></a></li>
         </ul>
       </nav>
-      <a class="progress-chip" href="#/progress" data-progress-chip></a>
+      <form class="search search-nav" role="search" action="#/search" data-search-form>
+        <label class="sr-only" for="nav-q">Search openings, gambits and lessons</label>
+        <svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="nav-q" type="search" name="q" autocomplete="off" placeholder="Search">
+      </form>
+      <a class="btn btn-quiet btn-icon search-icon" href="#/search" data-route="search" aria-label="Search"><svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
     </div>
   </header>
+  <nav class="tabbar" aria-label="Sections">
+    <a href="#/openings" data-route="openings"><span class="tab-ico tab-ico-open" aria-hidden="true"></span>Openings</a>
+    <a href="#/gambits" data-route="gambits"><span class="tab-ico tab-ico-gambit" aria-hidden="true"></span>Gambits</a>
+    <a href="#/lessons" data-route="lessons"><span class="tab-ico tab-ico-lesson" aria-hidden="true"></span>Lessons</a>
+    <a href="#/study" data-route="study" data-study-label><span class="tab-ico tab-ico-study" aria-hidden="true"></span>My study<span class="nav-dot" data-due-dot hidden></span></a>
+  </nav>
+
 
   <main id="main" tabindex="-1">
     <noscript>
@@ -55,12 +62,8 @@
       <p class="footer-note">The Quiet Gambit is a small chess studio. Positions are curated examples, and the board checks that a move is legal. It does not run an engine, so it judges your moves against prepared answers. Your progress is saved in this browser only.</p>
       <nav aria-label="Footer">
         <ul>
-          <li><a href="#/paths">Learning paths</a></li>
-          <li><a href="#/library">Chess Library</a></li>
-          <li><a href="#/explorer">Opening Explorer</a></li>
-          <li><a href="#/lessons">All lessons</a></li>
-          <li><a href="#/coach">Your coach</a></li>
-          <li><a href="#/progress">Your progress</a></li>
+          <li><a href="#/search">Search</a></li>
+          <li><a href="#/lessons?tab=paths">Learning paths</a></li>
           <li><a href="#/glossary">Glossary</a></li>
         </ul>
       </nav>
@@ -86,8 +89,9 @@
   <script src="js/progress.js"></script>
   <script src="js/app.js"></script>
   <script src="js/views-library.js"></script>
-  <script src="js/views-explorer.js"></script>
   <script src="js/views-coach.js"></script>
   <script src="js/views-lesson.js"></script>
+  <script src="js/trainer.js"></script>
+  <script src="js/views-v4.js"></script>
 </body>
 </html>

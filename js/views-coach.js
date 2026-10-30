@@ -157,6 +157,7 @@
     return '<ol class="lesson-list">' + s.items.map(function (it) { return A.lessonRow(it.lesson, { why: it.why, path: it.path && it.path.id }); }).join('') + '</ol>';
   }
   A.coachSession = function () { var p = P.prefs(); return p ? session(p) : null; };
+  A.coach = { session: session, rankPaths: rankPaths, whiteRepertoire: whiteRepertoire, defenceFor: defenceFor };
 
   function radio(name, value, label, sub, cur) {
     return '<label class="choice"><input type="radio" name="' + name + '" value="' + esc(value) + '"' + (String(cur) === String(value) ? ' checked' : '') + '>' +

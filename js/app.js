@@ -131,31 +131,16 @@
   };
 
   // ------------------------------------------------------------ chrome
+  // Header: a quiet dot on "My study" when lessons or lines are waiting for review.
   function updateChrome() {
-    var done = A.countDone(Q.lessons), total = Q.lessons.length;
     var review = Q.lessons.filter(function (l) { return P.state(l.id) === 'review'; }).length;
-    var chip = $('[data-progress-chip]');
-    var label = done === 0 ? 'Progress' : done + ' of ' + total + ' done';
-    var filled = Math.round(done / total * 4);
-    chip.innerHTML = '<span class="pips" aria-hidden="true">' + [0, 1, 2, 3].map(function (i) { return A.pip(i < filled ? 'completed' : 'new'); }).join('') + '</span>' +
-      '<span>' + esc(label) + '</span>' + (review ? '<span class="chip-review">' + review + ' to review</span>' : '');
-    chip.setAttribute('aria-label', label + (review ? ', ' + review + ' to review' : '') + ': open your progress');
-    $('[data-progress-text]').textContent = 'Progress: ' + done + ' of ' + total + ' lessons done';
+    var due = window.QGTrainer ? window.QGTrainer.due().length : 0;
+    $$('[data-due-dot]').forEach(function (d) { d.hidden = !(review + due); });
+    $$('[data-study-label]').forEach(function (a) { a.setAttribute('aria-label', 'My study' + (review + due ? ', ' + (review + due) + ' to review' : '')); });
   }
   A.updateChrome = updateChrome;
   P.onChange(updateChrome);
-
-  var menuBtn = $('.menu-btn'), nav = $('#site-nav');
-  function setMenu(open) {
-    nav.classList.toggle('is-open', open);
-    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    menuBtn.textContent = open ? 'Close' : 'Menu';
-  }
-  menuBtn.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
-  nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); menuBtn.focus(); }
-  });
+  function setMenu() {}
   $('.skip-link').addEventListener('click', function (e) { e.preventDefault(); main.focus(); main.scrollIntoView(); });
 
   // ------------------------------------------------------------ query helpers
@@ -557,9 +542,9 @@
   };
 
   // ------------------------------------------------------------ router
-  var REDIRECT = { path: '#/progress', tactics: '#/category/tactics', middlegames: '#/category/strategy', endgames: '#/category/endgames' };
-  var NAV_SECTION = { paths: 'paths', library: 'library', lessons: 'lessons', category: 'lessons', lesson: 'lessons', progress: 'progress', coach: 'coach',
-    openings: 'openings', family: 'openings', opening: 'openings', gambits: 'gambits', gambit: 'gambits', explorer: 'explorer' };
+  var REDIRECT = { path: '#/study', progress: '#/study', tactics: '#/category/tactics', middlegames: '#/category/strategy', endgames: '#/category/endgames' };
+  var NAV_SECTION = { paths: 'lessons', lessons: 'lessons', category: 'lessons', lesson: 'lessons', study: 'study', coach: 'study',
+    openings: 'openings', family: 'openings', opening: 'openings', gambits: 'gambits', gambit: 'gambits', search: 'search' };
 
   function route() {
     var raw = (location.hash || '#/').replace(/^#\/?/, '');
@@ -577,21 +562,24 @@
     if (head === '') result = A.views.home();
     else if (head === 'paths') result = A.views.paths(id);
     else if (head === 'library') result = A.views.library(r.query);
+    else if (head === 'search') result = A.views.search(r.query);
+    else if (head === 'study') result = A.views.study();
+    else if (head === 'train') { result = A.views.train(id, p[2] ? safeDecode(p[2]) : '', r.query); var tx = Q.line(id); section = tx && tx.kind === 'gambit' ? 'gambits' : 'openings'; }
     else if (head === 'lessons') result = A.views.lessons(r.query);
     else if (head === 'category') result = A.views.category(id);
     else if (head === 'progress') result = A.views.progress();
     else if (head === 'coach') result = A.views.coach();
     else if (head === 'glossary') result = A.views.glossary();
     else if (head === 'openings') result = A.views.openings(p[1] || '', p[2] || '', r.query);
-    else if (head === 'family') result = A.views.family(id);
+    else if (head === 'family') result = A.views.family(id, r.query);
     else if (head === 'opening' || head === 'gambit') result = A.views.line(id, head, r.query);
     else if (head === 'gambits') result = A.views.gambits(p[1] || '', p[2] || '', r.query);
-    else if (head === 'explorer') result = A.views.explorer(r.query);
+    else if (head === 'explorer') { var en = Q.node(r.query.side === 'black' ? 'black' : 'white', (r.query.at || '').split('.').filter(Boolean)), loc = en && Q.locate(en); location.replace(loc && loc.family ? '#/family/' + loc.family.id + A.buildQuery({ at: r.query.at }) : '#/openings/' + (r.query.side === 'black' ? 'black' : 'white')); return; }
     else if (head === 'lesson') result = A.views.lesson(id, r.query);
     else result = A.views.notFound();
     result = result || {};
     document.title = result.title || SITE;
-    $$('.nav a[data-route]').forEach(function (a) {
+    $$('[data-route]').forEach(function (a) {
       if (a.dataset.route === section) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     setMenu(false);
