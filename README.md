@@ -105,7 +105,7 @@ There is no engine. A legal move that isn't a prepared answer gets curated or ge
 
 The trainer judges your moves only against the library's lines, as described above.
 
-Progress is stored in `localStorage` under `qg-progress-v2`; older `qg-progress-v1` data is migrated. Coach preferences are stored under `qg-coach-v1` and trainer results under `qg-trainer-v1`. All stay in that browser.
+Progress is stored in `localStorage` under `qg-progress-v2`; older `qg-progress-v1` data is migrated. Coach preferences are stored under `qg-coach-v1` and trainer results under `qg-trainer-v1`. The theme is dark by default; the sun/moon button in the header switches it, and the choice is kept under `qg-theme`. All stay in that browser.
 
 ## Adding content
 

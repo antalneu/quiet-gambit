@@ -1,0 +1,90 @@
+/* ==========================================================================
+   The Quiet Gambit — themes.
+   Dark is the default (set on <html data-theme> before the page paints);
+   the header button switches to light and the choice is remembered.
+   The board keeps the same colours in both themes: chess pieces and
+   squares are a fixed object, not part of the page chrome.
+   ========================================================================== */
+
+/* The board, side markers and turn dots: fixed colours in every theme */
+:root { --board-ink: #161A2B; --raised: #FFFFFF; --sel: var(--ink); --on-sel: #FFFFFF; }
+.piece-w { -webkit-text-stroke-color: var(--board-ink); }
+.piece-b { color: var(--board-ink); -webkit-text-stroke-color: var(--board-ink); }
+.sq-dark .coord { color: var(--board-ink); }
+.turn-dot { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.turn-dot.is-b, .side-dot-black, .mover-b, .door-black .door-mark { background: var(--board-ink); }
+
+/* ---------------------------------------------------------------- dark tokens */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #E8EAF2; --ink-2: #C3C7D6; --graphite: #A0A6BA;
+  --accent: #8A93FF; --accent-hi: #9BA3FF; --accent-ink: #B4BAFF; --accent-wash: #232A55; --accent-board: #1F2AA8;
+  --mist-0: #0D0F17; --mist-1: #141827;
+  --surface: #171A26; --surface-2: #1F2332; --surface-3: #2A2F41; --raised: #2B3045;
+  --sel: #E8EAF2; --on-sel: #10121A;
+  --hairline: rgba(255, 255, 255, .08); --edge-ui: rgba(255, 255, 255, .24); --edge-input: #7E8499;
+  --sq-light: #DED8CA; --sq-dark: #7F8BA8;
+  --ok: #9AD9AE; --ok-wash: #142A1D; --bad: #F4A897; --bad-wash: #301813; --hint: #C2C6FF; --hint-wash: #1F2550;
+  --glass-bg: linear-gradient(180deg, rgba(38, 42, 58, .90), rgba(28, 31, 44, .82));
+  --glass-bg-strong: linear-gradient(180deg, rgba(40, 44, 60, .97), rgba(30, 33, 46, .94));
+  --glass-well: rgba(255, 255, 255, .07);
+  --edge-glass: inset 0 1px 0 rgba(255, 255, 255, .10), inset 0 -1px 0 rgba(0, 0, 0, .25), 0 0 0 1px rgba(255, 255, 255, .08);
+  --e1: 0 1px 2px rgba(0, 0, 0, .30), 0 2px 8px rgba(0, 0, 0, .25);
+  --e2: 0 2px 4px rgba(0, 0, 0, .30), 0 12px 28px -8px rgba(0, 0, 0, .55);
+  --e3: 0 4px 8px rgba(0, 0, 0, .35), 0 28px 60px -14px rgba(0, 0, 0, .70);
+  --ivory: var(--mist-0); --paper: var(--surface); --rule: #343A4E; --rule-strong: #4A5168;
+  --success: #9AD9AE; --error: #F4A897;
+}
+:root[data-theme="dark"] body { background: var(--mist-0); color: var(--ink); }
+:root[data-theme="dark"] body::before {
+  background:
+    radial-gradient(60vmax 50vmax at 6% -12%, rgba(110, 120, 255, .20), transparent 60%),
+    radial-gradient(50vmax 45vmax at 104% 106%, rgba(214, 170, 110, .08), transparent 60%),
+    linear-gradient(180deg, var(--mist-0), var(--mist-1));
+}
+
+/* Surfaces that were white in the light theme */
+:root[data-theme="dark"] :is(.nav a[aria-current="page"], .tabbar a[aria-current="page"], .segmented [aria-current], .segmented [aria-pressed="true"]) { background: var(--raised) !important; color: var(--ink) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 1px var(--edge-ui); }
+:root[data-theme="dark"] .nav-dot { box-shadow: 0 0 0 2px var(--surface); }
+:root[data-theme="dark"] :is(.search input, .field input, .field select) { background: var(--raised); color: var(--ink); }
+:root[data-theme="dark"] .search input::placeholder { color: #9096AA; }
+:root[data-theme="dark"] :is(.line-row:hover, .door:hover, .tr-line:hover) { background: var(--surface-3); }
+:root[data-theme="dark"] .line-row { background: var(--surface-3); }
+
+/* Selected items: a light pill with dark text in the dark theme */
+:root[data-theme="dark"] :is(.tree-row.is-selected, .line-row.is-selected, .tr-line[aria-pressed="true"], .movelist button[aria-current="step"]) { background: var(--sel); color: var(--on-sel); }
+:root[data-theme="dark"] :is(.tree-row.is-selected .branch-move, .tree-row.is-selected .tree-meta, .line-row.is-selected .line-kind, .line-row.is-selected .line-done, .tr-line[aria-pressed="true"] .tr-done, .tr-line[aria-pressed="true"] .tr-due) { color: var(--on-sel); }
+:root[data-theme="dark"] .tree-row.is-selected .mover { box-shadow: inset 0 0 0 1.5px var(--on-sel); }
+:root[data-theme="dark"] .soundness-established { background: var(--sel); color: var(--on-sel); }
+:root[data-theme="dark"] .tr-ticks li.is-done { background: var(--ink); }
+:root[data-theme="dark"] .tr-ticks li.is-them.is-done { background: #8A90A6; }
+
+/* The primary action: dark text on the brighter accent (white on it would fail contrast) */
+:root[data-theme="dark"] :is(.btn-primary, .btn-accent) { background: var(--accent); color: #0D0F1C; }
+:root[data-theme="dark"] :is(.btn-primary, .btn-accent):hover { background: var(--accent-hi); }
+
+/* White and Black fields on Home keep their meaning in the dark theme */
+:root[data-theme="dark"] .side-field-white { background: #E9E5DA; color: #161A2B; }
+:root[data-theme="dark"] .side-field-white :focus-visible { outline-color: #2F3BD6; }
+:root[data-theme="dark"] .side-field-black { background: #07080D; color: var(--ink); box-shadow: inset 0 0 0 1px var(--hairline); }
+
+/* Feedback colours from the older styles */
+:root[data-theme="dark"] .fb-info { background: #1D2130; }
+:root[data-theme="dark"] .feedback.is-correct { color: var(--ok); }
+:root[data-theme="dark"] .feedback.is-correct .feedback-title { color: var(--ok); }
+:root[data-theme="dark"] .feedback.is-wrong { color: var(--bad); }
+:root[data-theme="dark"] .feedback.is-wrong .feedback-title { color: var(--bad); }
+:root[data-theme="dark"] :is(.feedback.is-hint, .feedback.is-info) { color: var(--hint); }
+:root[data-theme="dark"] :is(.feedback.is-hint, .feedback.is-info) .feedback-title { color: var(--hint); }
+:root[data-theme="dark"] .feedback-body { color: var(--ink); }
+:root[data-theme="dark"] .tag-established { background: var(--sel); color: var(--on-sel); border-color: var(--sel); }
+:root[data-theme="dark"] .skip-link { background: var(--sel); color: var(--on-sel); }
+
+/* ---------------------------------------------------------------- the theme button */
+.theme-toggle { flex: none; color: var(--ink-2); }
+.theme-toggle:hover { color: var(--ink); }
+.theme-toggle .icon { width: 20px; height: 20px; }
+.theme-toggle .ico-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .ico-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .ico-moon { display: none; }
+@media (max-width: 760px) { .search-icon { margin-left: auto; } .theme-toggle { margin-left: 0; } }

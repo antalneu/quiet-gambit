@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Quiet Gambit</title>
   <meta name="description" content="A chess studio with a searchable opening library for White and Black, an opening explorer, honest gambit guides, guided paths and over a hundred short interactive lessons.">
-  <meta name="theme-color" content="#E7EBF4">
+  <meta name="theme-color" content="#0D0F17">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('qg-theme') === 'light' ? 'light' : 'dark'; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='10' height='10' fill='%231A1D2B'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%232F3BD6'/%3E%3Crect x='10.5' y='.5' width='9' height='9' fill='none' stroke='%231A1D2B'/%3E%3Crect x='.5' y='10.5' width='9' height='9' fill='none' stroke='%231A1D2B'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +16,7 @@
   <link rel="stylesheet" href="css/library.css">
   <link rel="stylesheet" href="css/catalogue.css">
   <link rel="stylesheet" href="css/glass.css">
+  <link rel="stylesheet" href="css/theme-dark.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -37,6 +39,7 @@
         <svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <input id="nav-q" type="search" name="q" autocomplete="off" placeholder="Search">
       </form>
+      <button type="button" class="btn btn-quiet btn-icon theme-toggle" data-theme-toggle aria-label="Switch to light mode"><svg class="icon ico-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 2v2.2M10 15.8V18M2 10h2.2M15.8 10H18M4.3 4.3l1.6 1.6M14.1 14.1l1.6 1.6M4.3 15.7l1.6-1.6M14.1 5.9l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="icon ico-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.5 6.5 0 0 1 7.4 4.5a6.5 6.5 0 1 0 8.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
       <a class="btn btn-quiet btn-icon search-icon" href="#/search" data-route="search" aria-label="Search"><svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
     </div>
   </header>
