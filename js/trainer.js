@@ -155,7 +155,8 @@
     if (!x) return A.views.notFound();
     var seq = build(x, which || q.line || 'typical');
     if (!seq) return A.views.notFound();
-    var mode = q.mode === 'practice' || q.mode === 'guided' ? q.mode : (store.prefs.mode || 'guided');
+    // Train opens in guided mode (with arrows); only an explicit ?mode=practice link starts practice.
+    var mode = q.mode === 'practice' ? 'practice' : 'guided';
     var isG = x.kind === 'gambit';
     var parent = isG ? { href: '#/gambit/' + encodeURIComponent(x.id), name: x.name } : { href: '#/family/' + encodeURIComponent(x.fam.id) + '?v=' + encodeURIComponent(x.id), name: x.fam.name };
     var title = isG ? x.name : x.short;
@@ -329,7 +330,7 @@
       say('Try again. Your move.');
     }
     function restart(newMode) {
-      if (newMode) { mode = newMode; store.prefs.mode = mode; persist(); }
+      if (newMode) mode = newMode;
       newRun(0);
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
       A.replaceHash(hrefFor(seq.which, mode));
