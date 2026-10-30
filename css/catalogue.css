@@ -242,3 +242,4 @@
   .ex-path { order: 0; } #ex-moves { order: 1; } #ex-where { order: 2; } #ex-here { order: 3; }
   .ex-board .ex-help { display: none; }
 }
+@media (max-width: 700px) { .explorer-page .page-head .lede { display: none; } .explorer-page .page-head { padding-top: var(--s-6); } }

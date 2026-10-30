@@ -42,9 +42,9 @@
     var node = Q.node(side, start) || root;
     var forward = {}; // node key -> child last visited, so Forward retraces your steps
 
-    main.innerHTML = '<div class="container">' + A.pageHead({
+    main.innerHTML = '<div class="container explorer-page">' + A.pageHead({
         trail: [['Library', '#/library'], ['Opening Explorer']],
-        title: 'Opening Explorer', next: true,
+        title: 'Opening Explorer',
         lede: 'Follow an opening move by move. At each position you see the choices the library covers, the variations that pass through, and where another move order reaches the same position. Openings branch with the opponent\'s replies: nothing here is forced.',
         extra: '<div class="toolbar"><nav class="segmented" aria-label="Repertoire side">' +
           ['white', 'black'].map(function (s) {
