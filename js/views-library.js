@@ -334,7 +334,7 @@
         return '<button type="button" class="line-pick" data-pick="' + esc(ln.id) + '" aria-pressed="false"><span class="line-pick-name">' + esc(ln.name) + '</span><span class="line-pick-kind">' + esc(ln.kindLine) + '</span></button>';
       }).join('') + '</div>';
 
-    var pitfalls = x.pitfalls.length ? '<div class="detail-block"><h2 class="h3">Traps, mistakes and risks</h2><ul class="pitfall-list">' +
+    var pitfalls = x.pitfalls.length ? '<div class="detail-block"><h2 class="h3" id="sec-pitfalls" tabindex="-1">Traps, mistakes and risks</h2><ul class="pitfall-list">' +
       x.pitfalls.map(function (p, i) {
         return '<li class="pitfall pitfall-' + esc(String(p.kind).toLowerCase()) + '">' +
           '<p class="pitfall-head"><span class="tag tag-pitfall tag-' + esc(String(p.kind).toLowerCase()) + '" title="' + esc(PITFALL_NOTE[p.kind] || '') + '">' + esc(p.kind) + '</span>' +
@@ -350,7 +350,7 @@
           (r.lineRef ? '<button type="button" class="btn btn-quiet btn-sm" data-pick-line="' + esc(r.lineRef.id) + '">Play through this line</button>' : '') + '</li>';
       }).join('') + '</ul></div>' : '';
 
-    var movesList = x.lines.length ? '<div class="detail-block"><h2 class="h3">Move lines</h2><p class="small muted">The opening branches according to the ' + (own === 'white' ? 'opponent' : 'opponent') + '\'s choices. Pick a line to play it on the board.</p><ul class="mline-list">' +
+    var movesList = x.lines.length ? '<div class="detail-block"><h2 class="h3" id="sec-lines" tabindex="-1">Move lines</h2><p class="small muted">The opening branches according to the ' + (own === 'white' ? 'opponent' : 'opponent') + '\'s choices. Pick a line to play it on the board.</p><ul class="mline-list">' +
       x.lines.map(function (ln) {
         return '<li id="ml-' + esc(ln.id) + '"><button type="button" class="mline" data-pick-line="' + esc(ln.id) + '">' +
           '<span class="mline-top"><span class="mline-name">' + esc(ln.name) + '</span>' + A.tag(ln.kindLine, 'tag-quiet') + '</span>' +
@@ -360,6 +360,9 @@
         '</li>';
       }).join('') + '</ul></div>' : '';
 
+    // Long pages: buttons that jump to each part (hash links would clash with the router).
+    var jumps = [['sec-plans', 'Plans'], x.lines.length ? ['sec-lines', 'Move lines'] : null, x.pitfalls.length ? ['sec-pitfalls', 'Traps and risks'] : null, x.related.lessons.length ? ['sec-lessons', 'Lessons'] : null, ['conn-h', 'Connections']].filter(Boolean);
+    var jumpLinks = '<nav class="jump-links" aria-label="On this page"><span class="small muted">On this page:</span>' + jumps.map(function (j) { return '<button type="button" class="link-btn" data-jump="' + j[0] + '">' + j[1] + '</button>'; }).join('') + '</nav>';
     var same = samePlaces(x);
     var anc = [], p = x.parentRef;
     while (p) { anc.unshift(p); p = p.parentRef; }
@@ -372,7 +375,8 @@
         title: x.name, next: true,
         meta: A.side(x.side, isG ? GAMBIT_LABEL[x.side] : OPEN_LABEL[x.side]) + tags(x) + '<span>' + x.minutes + ' min study</span>' + (x.eco ? A.tag('ECO ' + x.eco, 'tag-quiet') : ''),
         extra: '<p class="mainline">' + esc(x.moves) + '</p><p class="lede">' + esc(x.summary) + '</p>' +
-          (x.aliases.length ? '<p class="small muted">Also called: ' + esc(x.aliases.join(', ')) + '</p>' : '')
+          (x.aliases.length ? '<p class="small muted">Also called: ' + esc(x.aliases.join(', ')) + '</p>' : '') +
+          jumpLinks
       }) +
       '<div class="line-grid">' +
         '<div class="line-board"><div id="line-board"></div><p class="line-now" id="line-now" aria-live="polite"></p><div id="line-stepper"></div>' + lineButtons +
@@ -384,7 +388,7 @@
           (isG ? '<div class="detail-block"><h2 class="h3">The offer</h2><p class="prose">' + esc(x.offer) + '</p></div>' +
                  '<div class="detail-block"><h2 class="h3">Compensation in practice</h2><p class="prose">' + esc(x.compensation) + '</p></div>' : '') +
           (keyMoves.length ? '<div class="detail-block"><h2 class="h3">Why the key moves matter</h2><dl class="key-moves">' + keyMoves.map(function (k) { return '<div><dt class="notation">' + esc(k.text) + '</dt><dd>' + esc(k.note) + '</dd></div>'; }).join('') + '</dl></div>' : '') +
-          '<div class="detail-block"><h2 class="h3">Plans for both sides</h2><div class="plan-cols">' + planCol(own) + planCol(other) + '</div></div>' +
+          '<div class="detail-block"><h2 class="h3" id="sec-plans" tabindex="-1">Plans for both sides</h2><div class="plan-cols">' + planCol(own) + planCol(other) + '</div></div>' +
         '</div>' +
       '</div>' +
       '<div class="line-columns">' +
@@ -409,7 +413,7 @@
           (relOpen.length ? '<div class="detail-block"><h3 class="h4">Related openings</h3>' + A.chips(relOpen, Q.line) + '</div>' : '') +
           (x.related.gambits.length ? '<div class="detail-block"><h3 class="h4">Related gambits</h3>' + A.chips(x.related.gambits, Q.line) + '</div>' : '') +
         '</div>' +
-        (lessons.length ? '<h3 class="h3 lessons-h">Lessons on this ' + (isG ? 'gambit' : 'variation') + '</h3>' + A.lessonList(lessons) : '') +
+        (lessons.length ? '<h3 class="h3 lessons-h" id="sec-lessons" tabindex="-1">Lessons on this ' + (isG ? 'gambit' : 'variation') + '</h3>' + A.lessonList(lessons) : '') +
         (near.length ? '<h3 class="h3 lessons-h">' + (lessons.length ? 'Lessons on related lines' : 'Practise it through related lines') + '</h3>' +
           (lessons.length ? '' : '<p class="muted">No lesson is built on this exact line; these lessons use positions from lines that share its moves or structure.</p>') + A.lessonList(near) : '') +
       '</section></article>';
@@ -438,6 +442,8 @@
     main.addEventListener('click', onClick);
     A.teardown.push(function () { main.removeEventListener('click', onClick); });
     function onClick(e) {
+      var jb = e.target.closest('[data-jump]');
+      if (jb) { var t = document.getElementById(jb.dataset.jump); if (t) { if (!t.hasAttribute('tabindex')) t.setAttribute('tabindex', '-1'); t.scrollIntoView({ block: 'start' }); t.focus({ preventScroll: true }); } return; }
       var pk = e.target.closest('[data-pick]');
       if (pk) { play(pk.dataset.pick); return; }
       var pl = e.target.closest('[data-pick-line]');

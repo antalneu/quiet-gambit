@@ -236,3 +236,9 @@
   .segmented a[aria-current], .filter-links a[aria-current], .nav a[aria-current] { outline: 2px solid Highlight; outline-offset: -2px; text-decoration: underline; }
   .pip { forced-color-adjust: none; }
 }
+.jump-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 15px; }
+@media (max-width: 900px) {
+  /* Phones: the moves to choose from come straight after the board and the moves played. */
+  .ex-path { order: 0; } #ex-moves { order: 1; } #ex-where { order: 2; } #ex-here { order: 3; }
+  .ex-board .ex-help { display: none; }
+}
